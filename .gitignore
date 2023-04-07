@@ -2,7 +2,8 @@
 
 staticfiles/*
 db.sqlite3
-### Django ###
+### Djangoo ###
+
 *.log
 *.pot
 *.pyc
