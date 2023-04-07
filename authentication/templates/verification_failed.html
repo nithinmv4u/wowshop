@@ -1,0 +1,8 @@
+{% extends 'login_signup.html' %}
+
+{% block verification_failed %}
+    <h2>Verification of your email failed..!</h2>
+    <p>Please select an option</p>
+    <a class="nav-log" href="{% url 'authentication:login' %}">Login</a>
+    <a class="nav-log" href="{% url 'authentication:signup' %} ">Sign Up</a>
+{% endblock verification_failed %}

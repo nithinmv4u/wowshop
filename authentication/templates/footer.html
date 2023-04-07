@@ -1,0 +1,374 @@
+{% load static %}
+
+<!-- Footer -->
+<footer class="bg3 p-t-75 p-b-32">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6 col-lg-3 p-b-50">
+                <h4 class="stext-301 cl0 p-b-30">
+                    Categories
+                </h4>
+
+                <ul>
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            Women
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            Men
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            Shoes
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            Watches
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-6 col-lg-3 p-b-50">
+                <h4 class="stext-301 cl0 p-b-30">
+                    Help
+                </h4>
+
+                <ul>
+                    <li class="p-b-10">
+                        <a href="{% url 'cart_order:order_history' %}" class="stext-107 cl7 hov-cl1 trans-04">
+                            Track Order
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            Returns 
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            Shipping
+                        </a>
+                    </li>
+
+                    <li class="p-b-10">
+                        <a href="#" class="stext-107 cl7 hov-cl1 trans-04">
+                            FAQs
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="col-sm-6 col-lg-3 p-b-50">
+                <h4 class="stext-301 cl0 p-b-30">
+                    GET IN TOUCH
+                </h4>
+
+                <p class="stext-107 cl7 size-201">
+                    Any questions? Let us know in store at 8th floor, 379 Hudson St, New York, NY 10018 or call us on (+1) 96 716 6879
+                </p>
+
+                <div class="p-t-27">
+                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-facebook"></i>
+                    </a>
+
+                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-instagram"></i>
+                    </a>
+
+                    <a href="#" class="fs-18 cl7 hov-cl1 trans-04 m-r-16">
+                        <i class="fa fa-pinterest-p"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-sm-6 col-lg-3 p-b-50">
+                <h4 class="stext-301 cl0 p-b-30">
+                    Newsletter
+                </h4>
+
+                <form>
+                    <div class="wrap-input1 w-full p-b-4">
+                        <input class="input1 bg-none plh1 stext-107 cl7" type="text" name="email" placeholder="email@example.com">
+                        <div class="focus-input1 trans-04"></div>
+                    </div>
+
+                    <div class="p-t-18">
+                        <button class="flex-c-m stext-101 cl0 size-103 bg1 bor1 hov-btn2 p-lr-15 trans-04">
+                            Subscribe
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="p-t-40">
+            <div class="flex-c-m flex-w p-b-18">
+                <a href="#" class="m-all-1">
+                    <img src="{% static 'images/icons/icon-pay-01.png' %}" alt="ICON-PAY">
+                </a>
+
+                <a href="#" class="m-all-1">
+                    <img src="{% static 'images/icons/icon-pay-02.png' %}" alt="ICON-PAY">
+                </a>
+
+                <a href="#" class="m-all-1">
+                    <img src="{% static 'images/icons/icon-pay-03.png' %}" alt="ICON-PAY">
+                </a>
+
+                <a href="#" class="m-all-1">
+                    <img src="{% static 'images/icons/icon-pay-04.png' %}" alt="ICON-PAY">
+                </a>
+
+                <a href="#" class="m-all-1">
+                    <img src="{% static 'images/icons/icon-pay-05.png' %}" alt="ICON-PAY">
+                </a>
+            </div>
+
+            <p class="stext-107 cl6 txt-center">
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+Copyright &copy;{{ copyright_year }} All rights reserved | {{site_name}}
+<!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+
+            </p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- Back to top -->
+<div class="btn-back-to-top" id="myBtn">
+    <span class="symbol-btn-back-to-top">
+        <i class="zmdi zmdi-chevron-up"></i>
+    </span>
+</div>
+
+<!--===============================================================================================-->	
+<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
+<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
+
+<script>
+    // Get the select element and initialize Select2
+    const select = $('.js-select2');
+    const productIdField = $('#product_size_id');
+    select.select2({
+      minimumResultsForSearch: 20,
+      dropdownParent: select.next('.dropDownSelect2')
+    });
+  
+    // Listen for changes on the Select2 dropdown
+    select.on('select2:select', (event) => {
+      // Get the selected size and its price
+      const selectedOption = event.params.data.element;
+      const size = selectedOption.textContent;
+      const price = selectedOption.getAttribute('data-price');
+      const id = selectedOption.value;
+      console.log(id);
+      
+      // Update the price display
+      const priceDisplay = $('.js-price');
+      priceDisplay.text(price);
+      productIdField.val(id);
+    });
+</script>  
+
+{% comment %} <script>
+    $(".js-select2").each(function(){
+        $(this).select2({
+            minimumResultsForSearch: 20,
+            dropdownParent: $(this).next('.dropDownSelect2')
+        });
+    })
+</script> {% endcomment %}
+<!--===============================================================================================-->
+<script src="{% static 'vendor/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'vendor/daterangepicker/daterangepicker.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/slick/slick.min.js' %}"></script>
+<script src="{% static 'js/slick-custom.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/parallax100/parallax100.js' %}"></script>
+<script>
+    $('.parallax100').parallax100();
+</script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/MagnificPopup/jquery.magnific-popup.min.js' %}"></script>
+<script>
+    $('.gallery-lb').each(function() { // the containers for all your galleries
+        $(this).magnificPopup({
+            delegate: 'a', // the selector for gallery item
+            type: 'image',
+            gallery: {
+                enabled:true
+            },
+            mainClass: 'mfp-fade'
+        });
+    });
+</script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/isotope/isotope.pkgd.min.js' %}"></script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/sweetalert/sweetalert.min.js' %}"></script>
+<script>
+    //$('.js-addwish-b2').on('click', function(e){ ---- this have been modified as below to make the click event will still work for dynamically added elements even after reloading the page
+    $('body').on('click', '.js-addwish-b2', function(e){ //binded to parent element
+        e.preventDefault();
+        var product_id = $(this).data('product-id');
+        //alert(product_id);
+        $.ajax({
+            url: '/wishlist/add/',
+            method: 'POST',
+            data: {
+                'product_id': product_id,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function(response){
+                swal(response.message, response.info, "success");
+                $('.js-addwish-b2[data-product-id='+product_id+']').addClass('js-addedwish-b2');
+                $('.js-addwish-b2[data-product-id='+product_id+']').off('click');
+                $("#product_list").load(location.href + " #product_list");
+            },
+            error: function(xhr, status, error){
+                console.log(xhr.responseText);
+                swal("Error", "Failed to add product to wishlist", "error");
+            }
+        });
+    });
+    {% comment %} $('.js-addwish-b2').on('click', function(e){
+        e.preventDefault();
+    });
+
+    $('.js-addwish-b2').each(function(){
+        var nameProduct = $(this).parent().parent().find('.js-name-b2').html();
+        $(this).on('click', function(){
+            swal(nameProduct, "is added to wishlist !", "success");
+
+            $(this).addClass('js-addedwish-b2');
+            //$(this).off('click');
+        });
+    }); {% endcomment %}
+
+    {% comment %} $('.js-addwish-detail').each(function(){
+        var nameProduct = $(this).parent().parent().parent().find('.js-name-detail').html();
+
+        $(this).on('click', function(){
+            swal(nameProduct, "is added to wishlist !", "success");
+
+            $(this).addClass('js-addedwish-detail');
+            $(this).off('click');
+        });
+    }); {% endcomment %}
+
+  
+
+    {% comment %} $('.js-addcart-detail').each(function(){
+        var nameProduct = $(this).parent().parent().parent().parent().find('.js-name-detail').html();
+        console.log(nameProduct)
+        $(this).on('click', function(){
+            swal(nameProduct, "is added to cart !", "success");
+        });
+    }); {% endcomment %}
+    
+</script>
+<!--===============================================================================================-->
+<script src="{% static 'vendor/perfect-scrollbar/perfect-scrollbar.min.js' %}"></script>
+<script>
+    $('.js-pscroll').each(function(){
+        $(this).css('position','relative');
+        $(this).css('overflow','hidden');
+        var ps = new PerfectScrollbar(this, {
+            wheelSpeed: 1,
+            scrollingThreshold: 1000,
+            wheelPropagation: false,
+        });
+
+        $(window).on('resize', function(){
+            ps.update();
+        })
+    });
+</script>
+<!--===============================================================================================-->
+<script src="{% static 'js/main.js' %}"></script>
+{% comment %} Direct to product section  {% endcomment %}
+<script>
+function ProductFn(){
+    const element=document.getElementById("product_overview");
+    //element.scrollIntoView();
+
+    window.scrollTo({
+        top: element.offsetTop-70,
+        behavior: "smooth"
+      });
+}
+</script>
+
+
+{% if filter.form.is_valid %}
+    <script>
+        
+        {% comment %} // Scroll to the product list
+        document.getElementById('product_overview').scrollIntoView({
+            behavior: 'instant',
+            block: 'start'
+        }); {% endcomment %}
+    </script>
+{% endif %}
+  {% comment %} ------------AJAX for filter didn't work------------------ {% endcomment %}
+  {% comment %} <script>
+    // Get the form and input elements
+    //const form = document.getElementById('product_filter-form');
+
+    //event listener to the filter button
+    document.getElementById('filter-button').addEventListener('click', (event) => {
+        // Prevent the default form submission behavior
+        event.preventDefault();
+        console.log("prevent default---")
+        // Get the filter query from the input field
+        //const query = input.value;
+        //alert(query)
+        // Create a new XHR object
+        const xhr = new XMLHttpRequest();
+        //const url = form.action;
+        //const params = `product_filter=${query}`;
+  
+        // Set up the XHR request
+        //xhr.open('GET', `${url}?${params}`);
+        xhr.open('GET', `{% url 'authentication:home' %}`);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+    
+        // Define the callback function for when the XHR response is received
+        xhr.onload = () => {
+            if (xhr.status === 200) {
+                const response = JSON.parse(xhr.responseText);
+                const products = response.products;
+                const container = document.querySelector('.isotope-grid');
+                container.innerHTML = products;
+            } else {
+                console.error(xhr.statusText);
+            }
+        };       
+  
+        // Send the XHR request
+        console.log('Sending XHR request...');
+        xhr.send();
+    });
+  </script>  {% endcomment %}
+  
+</body>
+</html>

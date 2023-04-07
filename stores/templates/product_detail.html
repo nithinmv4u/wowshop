@@ -1,0 +1,223 @@
+{% comment %} {% extends 'store_base.html' %} {% endcomment %}
+
+{% block procat %}
+
+{% comment %} <style>
+    .image-slider {
+        display: flex;
+        overflow-x: scroll;
+        scroll-snap-type: x mandatory;
+        scroll-behavior: smooth;
+    }
+    .image-slider img {
+        scroll-snap-align: center;
+        max-height: 200px;
+        margin-right: 10px;
+    }
+    .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -22px;
+        padding: 16px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        background-color: rgba(0,0,0,0.3);
+    }
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+    .prev:hover, .next:hover {
+        background-color: rgba(0,0,0,0.8);
+    }
+    .dot-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    .dot {
+        display: inline-block;
+        cursor: pointer;
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        transition: background-color 0.6s ease;
+    }
+    .active, .dot:hover {
+        background-color: #717171;
+    }
+</style> {% endcomment %}
+<style>
+    .slider {
+        display: flex;
+        overflow-x: hidden;
+        scroll-snap-type: x mandatory;
+      }
+      
+      .slider img {
+        flex: 0 0 auto;
+        width: 100%;
+        scroll-snap-align: center;
+      }
+      
+      .slider__arrows {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 10px;
+      }
+      
+      .slider__arrow {
+        background-color: transparent;
+        border: none;
+        font-size: 2rem;
+        cursor: pointer;
+      }
+      
+      .slider__arrow--left {
+        margin-right: auto;
+      }
+      
+      .slider__arrow--right {
+        margin-left: auto;
+      }
+      
+</style>
+
+  <div class="card display-flex container">
+    <div class="row">
+        <div class="col-md-5 d-flex align-items-center">
+            <div class="card-body">
+                <h5 class="card-title">Product: {{ object.product }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Category: {{ object.category }}</h6>
+                <p class="card-text">Company: {{ object.make }}</p>
+                <p class="card-text">Price: ₹{{ object.price }}</p>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="">
+                <div class="slider">
+                    {% for image in product.images.all %}
+                    <img src="{{ image.image.url }}" alt="Product Image">
+                    {% endfor %}
+                </div>
+                <div class="slider__arrows">
+                    <button class="slider__arrow slider__arrow--left">&lt;</button>
+                    <button class="slider__arrow slider__arrow--right">&gt;</button>
+                </div>                
+            </div>
+               
+        </div>
+        {% comment %} <div class="col-md-2 d-flex align-items-center">
+            <div class="">
+                <a
+                href="{% url 'stores:product_update' product.id %}"
+                class="text-center btn btn-success btn-sm"
+                style="width: 100%"
+                >Edit</a
+                ><br>
+                <a class="text-center btn btn-danger btn-sm my-1"
+                href="{% url 'stores:product_delete' product.id %}"
+                class="text-center btn btn-success btn-sm"
+                style="width: 100%"
+                >Delete</a
+                ><br>
+                <form
+                action="{% url 'stores:product_update' product.id %}"
+                method="post"
+                class="d-inline"
+                style="width: 100%"
+                >
+                {% csrf_token %}
+                <input
+                    type="submit"
+                    {% if user.is_active %}
+                    value="Disable"
+                    {% else %}
+                    value="Enable"
+                    {% endif %}
+                    class="text-center btn btn-secondary btn-sm my-1"
+                />
+                </form><br>
+                <a class="text-center btn btn-info btn-sm my-1"
+                href="{% url 'stores:product_list' %}"
+                class="text-center btn btn-success btn-sm"
+                style="width: 100%"
+                >Back</a
+                >
+            </div>
+        </div> {% endcomment %}
+    </div>
+  </div>
+  <script>
+    const slider = document.querySelector('.slider');
+    const slideImages = document.querySelectorAll('.slider img');
+    const leftArrow = document.querySelector('.slider__arrow--left');
+    const rightArrow = document.querySelector('.slider__arrow--right');
+    const imageWidth = slideImages[0].clientWidth;
+    let slideIndex = 0;
+
+    // Set the first image as active
+    slideImages[0].classList.add('active');
+
+    // Move the slider to the next slide
+    function nextSlide() {
+        if (slideIndex === slideImages.length - 1) {
+            slideIndex = 0;
+        } else {
+            slideIndex++;
+        }
+        slideImages.forEach((img) => img.style.transform = `translateX(-${slideIndex * imageWidth}px)`);
+    }
+
+    // Move the slider to the previous slide
+    function prevSlide() {
+        if (slideIndex === 0) {
+            slideIndex = slideImages.length - 1;
+        } else {
+            slideIndex--;
+        }
+        slideImages.forEach((img) => img.style.transform = `translateX(-${slideIndex * imageWidth}px)`);
+    }
+
+    // Add event listeners to the arrow buttons
+    leftArrow.addEventListener('click', prevSlide);
+    rightArrow.addEventListener('click', nextSlide);
+</script>
+
+
+{% comment %} <script>
+    var slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+        var i;
+        var slides = document.getElementsByClassName("mySlides");
+        var dots = document.getElementsByClassName("dot");
+        if (n > slides.length) {slideIndex = 1}
+        if (n < 1) {slideIndex = slides.length}
+        for (i = 0; i < slides.length; i++) {
+            slides[i].style.display = "none";
+        }
+        for (i = 0; i < dots.length; i++) {
+            dots[i].className = dots[i].className.replace(" active", "");
+        }
+        slides[slideIndex-1].style.display = "block";
+        dots[slideIndex-1].className += " active";
+    }
+</script> {% endcomment %}
+{% endblock procat %}

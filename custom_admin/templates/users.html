@@ -1,0 +1,167 @@
+{% load static %}
+{% include 'admin_nav.html' %}
+{% load static %}
+
+{% comment %} {% block header %}
+  <h4 class="text-center text-white">User Management</h4>
+  <nav class="nav">
+    <a href="{% url 'custom_admin:admin_home' %}" class="nav-item">Admin Home</a>
+  </nav>
+{% endblock header %} {% endcomment %}
+
+{% block users %}
+
+<div class="col">
+  <div class="container">
+    <div class="row">
+      <h4 class="card-title">User details</h4>
+      <div class="col-md-8 text-end">
+        <form class="my-4" action="{% url 'custom_admin:searchusername' %}">
+          <div class="input-group mb-3">
+            <input
+              type="search"
+              name="search"
+              class="form-control"
+              placeholder="Enter First Name"
+            />
+            <button class="btn btn-dark" type="submit" id="button-addon2">
+              Search
+            </button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-4 text-center d-flex align-items-center">
+        <form
+              action="{% url 'custom_admin:user_add' %}"
+              method="post"
+              class="d-inline"
+            >
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark btn-icon-text">
+            Create User
+            <i class="ti-file btn-icon-append"></i>
+            </button>
+        </form>
+      </div>
+  </div>
+  </div>
+  {% comment %} <div class="row">
+    <div class="text-muted">Table data</div>
+  </div> {% endcomment %}
+  <div class="col-lg-12 grid-margin stretch-card">
+    <div class="card">
+      <div class="card-body">
+            {% if users %}
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">FIRST NAME</th>
+                    <th scope="col">LAST NAME</th>
+                    <th scope="col">EMAIL</th>
+                    <th scope="col">VERIFICATION</th>
+                    <th scope="col">ACTION</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  
+                  {% for user in users %}
+                  <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{user.first_name}}</td>
+                    <td>{{user.last_name}}</td>
+                    <td>{{user.username}}</td>
+                    <td>
+                      {% if user.email_verified %}
+                        <label class="text-success">Verified</label>
+                      {% else %}
+                        <label class="text-danger">Not Verified</label>
+                      {% endif %}
+                    </td>                    
+                    <!-- <td>{{user.email}}</td> -->
+                    <td>
+                      <button type="button" class="btn btn-dark btn-icon-text"
+                        onclick="location.href='{% url 'custom_admin:updatedata' user.id user.first_name %}'">
+                        Edit
+                        <i class="ti-file btn-icon-append"></i>
+                      </button>
+                      {% comment %} <form
+                        action="{% url 'custom_admin:deletedata' user.id %}"
+                        method="post"
+                        class="d-inline"
+                      >
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-icon-text">
+                          Delete
+                          <i class="ti-alert btn-icon-prepend"></i>
+                        </button>
+                      </form> {% endcomment %}
+                      <form
+                        action="{% url 'custom_admin:disabledata' user.id %}"
+                        method="post"
+                        class="d-inline"
+                      >
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger btn-icon-text">
+                          {% if user.is_active %}
+                          Disable
+                          {% else %}
+                          Enable
+                          {% endif %}
+                          <i class="ti-alert btn-icon-prepend"></i>
+                        </button>
+                        {% comment %} <input
+                          type="submit"
+                          {% if user.is_active %}
+                          value="Disable"
+                          {% else %}
+                          value="Enable"
+                          {% endif %}
+                          class="text-center btn btn-warning btn-sm my-1"
+                        /> {% endcomment %}
+                      </form>
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            {% else %}
+            <span>No result found</span>
+            {% endif %}
+
+            <div class="container">
+              {% if is_paginated %}
+                <nav aria-label="Page navigation">
+                  <ul class="pagination">
+                    {% if page_obj.has_previous %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" id="new-page">Previous</a>
+                      </li>
+                    {% endif %}
+                    {% for i in paginator.page_range %}
+                      {% if page_obj.number == i %}
+                        <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+                      {% else %}
+                        <li class="page-item"><a class="page-link" href="?page={{ i }}" id="new-page">{{ i }}</a></li>
+                      {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                      <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" id="new-page">Next</a>
+                      </li>
+                    {% endif %}
+                  </ul>
+                </nav>
+              {% else %}
+              <span>No other pages</span>
+              {% endif %}
+            </div>
+</div>
+{% for message in messages %}
+<div class="float-end">
+  <p class="text-danger">{{message}}</p>
+</div>
+{% endfor %}
+{% endblock users %}
+{% include 'admin_footer.html' %}

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+<h4 class="text-center text-white">Create User</h4>
+  <nav class="nav">
+    <a href="{% url 'custom_admin:users' %}" class="nav-item">User Management</a>
+    <a href="{% url 'custom_admin:admin_home' %}" class="nav-item">Admin Home</a>
+  </nav>
+{% endblock header %}
+
+{% block users %}
+<div class="container">
+  <div class="row">
+    <div class="col-lg-10 col-xl-9 mx-auto">
+      <div class="card flex-row my-5 border-0 shadow rounded-3 overflow-hidden">
+        <div class="card-img-left d-none d-md-flex">
+          <!-- Background image for card set in CSS! -->
+        </div>
+        <div class="card-body p-4 p-sm-5">
+          {% if messages %} {% for message in messages %}
+          <h4 style="color: crimson">{{message}}</h4>
+
+          {% endfor %} {% endif %}
+
+          <h6>
+            {{ form.password1.errors }} {{ form.password2.errors }} 
+            {{ form.username.errors }} {{ form.email.errors }}
+          </h6>
+          <form action="" method="POST" class="form-outline mb-4">
+            {% csrf_token %} {{form.as_p}}
+            {% if messages %}
+              <ul class="messages">
+                {% for message in messages %}
+                  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+            <button
+              class="btn btn-su btn-lg btn-block my-2 text-white bg-success font-weigth-bolder"
+              type="submit"
+            >
+              ADD
+            </button>
+            
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock users %}

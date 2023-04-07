@@ -1,0 +1,404 @@
+{% load static %}
+{% include 'admin_nav.html' %}
+{% block procat %}
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row">
+      <h4 class="card-title">Category Details</h4>
+      <div class="col container">
+        <div class="row">
+          <div class="col-md-8 text-end">
+            <form class="my-4" >
+              {% comment %} action="{% url 'stores:category_search' %}" {% endcomment %}
+              <div class="input-group mb-3">
+                <input
+                  type="search"
+                  name="search"
+                  class="form-control"
+                  placeholder="Enter Category Name"
+                />
+                <button class="btn btn-dark btn-icon-text" type="submit" id="search-button">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div>
+          <div class="col-md-4 text-center d-flex align-items-center" id="category_create">
+            <span>
+              {% comment %} <a href='" + edit_url + "' data-bs-toggle='modal' data-bs-target='#cat_edit' data-id='" + current_list.id + "' class='text-center btn btn-dark btn-icon-text cat-edit-link'>Edit<i class='ti-file btn-icon-append'></i></a>  {% endcomment %}
+              <a href="{% url 'stores:category_create' %}" data-bs-toggle='modal' data-bs-target='#cat_create' class="btn btn-icon-text btn-success text-white cat-create-link">Create Category</a>
+            </span>
+          </div>          
+        </div>
+      </div>
+
+      {% comment %} ----------Create Category Modal---------- {% endcomment %}
+      <div class="modal" tabindex="-1" id="cat_create">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create Category</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              {% comment %} <p>Modal body text goes here.</p> {% endcomment %}
+              {% comment %} {% include 'category_form.html' %} {% endcomment %}
+            </div>
+            <div class="modal-footer">
+              {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> {% endcomment %}
+              {% comment %} <button type="submit" class="btn btn-primary">Save changes</button> {% endcomment %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container" >
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+                  {% comment %} <h1>Product List</h1> {% endcomment %}
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="text-center">
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col">Category</th>
+                          <th scope="col">Parent Category</th>
+                          <th scope="col">ACTION</th>
+                        </tr>
+                      </thead>
+                      <tbody class="text-center" id="category_list">
+                          <tr><td>Please wait.....</td></tr>
+                      </tbody>
+                </table>
+                <div class="container">
+                  <div id="pagination_links"></div>
+                </div>
+                {% comment %} Modals {% endcomment %}
+                {% comment %} Edit Modal  {% endcomment %}
+                <div class="modal" tabindex="-1" id="cat_edit">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Edit Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        {% comment %} <p>Modal body text goes here.</p> {% endcomment %}
+                        {% comment %} {% include 'category_form.html' %} {% endcomment %}
+                      </div>
+                      <div class="modal-footer">
+                        {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> {% endcomment %}
+                        {% comment %} <button type="submit" class="btn btn-primary">Save changes</button> {% endcomment %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% comment %} Delete Modal  {% endcomment %}
+                <div class="modal" tabindex="-1" id="cat_delete">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title">Delete Category</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        {% comment %} <p>Modal body text goes here.</p> {% endcomment %}
+                        {% include 'category_confirm_delete.html' %}
+                      </div>
+                      <div class="modal-footer">
+                        {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> {% endcomment %}
+                        {% comment %} <button type="submit" class="btn btn-primary">Save changes</button> {% endcomment %}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+            </div>
+          </div>
+        </div>
+        {% for message in messages %}
+        <div class="float-end">
+          <p class="text-danger">{{message}}</p>
+        </div>
+        {% endfor %}
+        {% comment %} <span class >
+          <a href="/ admin" class="btn btn-lg btn-secondary">Back to Home</a>
+        </span> {% endcomment %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function stateChange(xhr, page, num_pages){
+    xhr.onreadystatechange = function(){
+      if(xhr.readyState==4){
+        if(xhr.status==200){
+          console.log(xhr.responseText)
+          const cat_list = JSON.parse(xhr.responseText);
+          const num_pages = cat_list.num_pages
+          console.log(num_pages,page)
+          let html_content = '';
+          for(let i=0;i<cat_list.categories.length;++i){
+            var current_list = cat_list.categories[i];
+            let edit_url = "{% url 'stores:category_update' 9999 %}".replace('9999', current_list.id);
+            let delete_url = "{% url 'stores:category_delete' 9999 %}".replace('9999', current_list.id);
+            let disable_url = "{% url 'stores:category_disable' 9999 %}".replace('9999', current_list.id);
+            let is_enabled = current_list.is_enabled ? 'Disable' : 'Enable';
+            html_content += "<tr><td>" + current_list.id + "</td><td>" + current_list.category + "</td><td>" + current_list.parent + "</td>" +
+              "<td><a href='" + edit_url + "' data-bs-toggle='modal' data-bs-target='#cat_edit' data-id='" + current_list.id + "' class='text-center btn btn-dark btn-icon-text cat-edit-link'>Edit<i class='ti-file btn-icon-append'></i></a>  "+
+                "<a href='" + delete_url + "' class='text-center d-none btn btn-danger btn-icon-text'>Delete<i class='ti-alert d-none btn-icon-prepend'></i></a>  "+
+                "<a id='disable_" + current_list.id + "' href='"+ disable_url + "'data-id='" + current_list.id + "' class='btn btn-warning btn-icon-text cat-disable-link'>"+ is_enabled +"<i class='ti-alert btn-icon-prepend'></i></a>";                
+          }
+          document.getElementById("category_list").innerHTML = html_content;
+          
+          //pagination links
+        let pagination_html = '';
+        if (page > 1) {
+          pagination_html += " <a href='' data-page='1'> First </a>";
+          pagination_html += " <a href='' data-page='" + (page-1) + "'> Previous </a>";
+        }
+        pagination_html += " Page " + page + " of " + num_pages;
+        if (page < num_pages) {
+          pagination_html += " <a href='' data-page='" + (page+1) + "'> Next </a>";
+          pagination_html += " <a href='' data-page='" + num_pages + "'> Last </a>";
+        }
+        console.log(pagination_html);
+        document.getElementById("pagination_links").innerHTML = pagination_html;
+        }
+      }
+    }
+  }
+  function getCategories(page, num_pages) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("get", "{% url 'stores:category_list' %}?page=" + page);
+    xhr.send();
+    stateChange(xhr, page, num_pages);
+  }
+  window.onload = function() {
+    //alert("hello")
+    getCategories(1, {{ num_pages }});
+  };
+
+  // Aevent listener for pagination links
+  document.getElementById("pagination_links").addEventListener("click", function(event) {
+    if (event.target.tagName.toLowerCase() === "a") {
+      event.preventDefault();
+      const page = parseInt(event.target.getAttribute("data-page"));
+      getCategories(page);
+    }
+  });
+  document.getElementById("search-button").addEventListener("click", function(event) {
+      event.preventDefault();
+      //alert("at search")
+      const searchQuery = document.querySelector("input[name='search']").value;
+      const xhr = new XMLHttpRequest();
+      page=1;
+      xhr.open("get", "{% url 'stores:category_search' %}?search=" + searchQuery + " ?page= " + page);
+      xhr.send();
+      stateChange(xhr, page, {{num_pages}});
+  });
+
+  {% comment %} document.getElementById("category_create").addEventListener("click", function(event) {
+    if (event.target.classList.contains("cat-create-link")) {
+      event.preventDefault();
+      //const pk = event.target.getAttribute("data-id");
+      //console.log(pk);
+      fetch(`/category/create/`)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("category-form").innerHTML = data;
+      });
+    }
+  }); {% endcomment %}
+  $(document).ready(function() {
+    $('#cat_create').on('show.bs.modal', function(e) {
+        $.ajax({
+            url: '/category/create/',
+            type: 'GET',
+            success: function(data) {
+                // load form HTML into modal body
+                $('#cat_create .modal-body').html(data);
+            },
+            error: function(data) {
+                // handle errors
+            }
+        });
+    });
+
+    $('#cat_create').on('submit', 'form', function(e) {
+        e.preventDefault();
+        var form = $(this);
+        $.ajax({
+            url: '/category/create/',
+            type: form.attr('method'),
+            data: form.serialize(),
+            dataType: 'json',
+            success: function(data) {
+              console.log(data);
+                // handle successful submission
+              if (data.success) {
+                // handle successful submission
+                Swal.fire({
+                    title: "Success!",
+                    text: data.message,
+                    icon: "success",
+                });
+
+              // close the modal and update category list
+              $('#cat_create').modal('hide');
+              // update category list with new
+              //getCategories();
+              } else {
+                // handle errors
+                Swal.fire({
+                    title: "Error!",
+                    text:data.message,
+                    icon:"error",
+                });
+              }
+            },
+            error: function(data) {
+                // handle errors
+            }
+        });
+    });
+  });
+  {% comment %} ---------worked code----------- {% endcomment %}
+  {% comment %} document.getElementById("category_list").addEventListener("click", function(event) {
+    if (event.target.classList.contains("cat-edit-link")) {
+      event.preventDefault();
+      const pk = event.target.getAttribute("data-id");
+      console.log(pk);
+      fetch(`/category/${pk}/update/`)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("category-form").innerHTML = data;
+      });
+    }
+  }); {% endcomment %}
+  $(document).on('click', '.cat-edit-link', function(e) {
+    e.preventDefault();
+    let edit_url = $(this).attr('href');
+    let cat_id = $(this).data('id');
+    console.log("edit: ",edit_url);
+    $('#cat_edit').data('edit-url', edit_url);
+    $('#cat_edit').modal('show');
+      //let edit_url = $('#cat_edit').data('edit-url');
+      //console.log(edit_url);
+      $.ajax({
+          url: edit_url,
+          type: 'GET',
+          success: function(data) {
+            //console.log(data);
+              // populate the edit form with data from the server
+              $('#cat_edit .modal-body').html(data);
+              //$('#edit-form input[name="name"]').val(data.category_name);
+              // ...
+          }
+      });
+
+    $('#cat_edit').on('submit', 'form', function(e) {
+        e.preventDefault();
+        console.log("at edit form submit")
+        var form = $(this);
+        let category_pk = cat_id;
+        let edit_url = `/category/${category_pk}/update/`;
+        //let edit_url = $(this).attr('action');
+        $.ajax({
+            url: edit_url,
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(data) {
+                if (data.success) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: data.message,
+                        icon: "success",
+                    });
+                    // refresh the category list
+                    load_categories();
+                } else {
+                    Swal.fire({
+                        title: "Error!",
+                        text: data.message,
+                        icon: "error",
+                    });
+                }
+            }
+        });
+    });
+  });
+  document.getElementById("category_list").addEventListener("click", function(event) {
+    if (event.target.classList.contains("cat-delete-link")) {
+      event.preventDefault();
+      const pk = event.target.getAttribute("data-id");
+      console.log(pk);
+      fetch(`/category/${pk}/delete/`)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("category-delete").innerHTML = data;
+      });
+    }
+  });
+  document.getElementById("category_list").addEventListener("click", function(event) {
+    if (event.target.classList.contains("cat-disable-link")) {
+      event.preventDefault();
+      const pk = event.target.getAttribute("data-id");
+      console.log(pk);
+      fetch(`/category/${pk}/disable/`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Success!',
+            text: data.message,
+          });
+        }
+        else {
+          swal("Error", "Operation Failed..!", "error");
+        }
+      });
+    }
+    getCategories(1, {{ num_pages }});
+  });
+</script>
+
+
+{% endblock procat %}
+{% include 'admin_footer.html' %}
+{% comment %} {% for category in categories %}
+<tr>
+  <td>{{ category.category }}</td>
+  <td>{{ category.parent }}</td>
+  <td>
+    <a
+      href="{% url 'stores:category_update' category.id %}"
+      class="text-center btn btn-dark btn-icon-text"
+      >Edit<i class="ti-file btn-icon-append"></i></a
+    >
+    <a 
+      href="{% url 'stores:category_delete' category.id %}"
+      class="text-center btn btn-danger btn-icon-text"
+      >Delete<i class="ti-alert btn-icon-prepend"></i></a
+    >
+    <form
+      action="{% url 'stores:category_disable' category.id %}"
+      method="post"
+      class="d-inline"
+    >
+      {% csrf_token %}
+      <button type="submit" class="btn btn-warning btn-icon-text">
+        {% if category.is_enabled %}
+        Disable
+        {% else %}
+        Enable
+        {% endif %}
+        <i class="ti-alert btn-icon-prepend"></i>
+      </button>
+    </form>
+  </td>
+</tr>
+{% endfor %} {% endcomment %}

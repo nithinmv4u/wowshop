@@ -1,0 +1,49 @@
+{% comment %} {% extends 'store_base.html' %}
+
+{% block header %}
+  <h4 class="text-center text-white my-3">Delete Category</h4>
+  <nav class="nav">
+    <a href="{% url 'custom_admin:admin_home' %}" class="nav-item">Admin Home</a>
+  </nav> 
+{% endblock header %}
+
+{% block procat %}
+<div class="my-4"> {% endcomment %}
+
+    {% comment %} <div class="text-center" >
+        {% if category.product_image %}
+          <img src="{{ product.product_image.url }}" alt="{{ product.product }}" class="img-thumbnail" style="max-height: 40vh; max-width: 40vw;">
+        {% else %}
+          No image
+        {% endif %}
+    </div> {% endcomment %}
+    <div class="text-center">
+      <form id="category-delete" class="w-100" method="post" enctype="multipart/form-data" data-pk="{{ category.pk }}">
+        {% csrf_token %}
+        <h5 class="text-center">Are you sure you want to delete "{{ category }}"?</h5>
+        <button type="submit" class="btn btn-danger my-2">Yes, delete</button>
+        {% comment %} <button type="button" onclick="location.href='{% url 'stores:category' %}'" class="btn btn-warning my-2">Cancel</button> {% endcomment %}
+    </form>
+    </div> 
+{% comment %} </div>
+{% endblock procat %} {% endcomment %}
+<script>
+  document.getElementById("category-delete").addEventListener("submit", function(event) {
+    event.preventDefault(); // prevent the default form submission behavior
+  
+    const form = event.target; // get the form element
+    const formData = new FormData(form); // serialize the form data using the FormData API
+    const pk = form.getAttribute("data-pk"); // get the category ID
+  
+    fetch(`/category/${pk}/delete/`, { // send a POST request to the CategoryUpdate view
+      method: "POST",
+      body: formData,
+    })
+    .then(response => response.text())
+    .then(data => {
+      console.log(data)
+      document.getElementById("category-delete").innerHTML = data; // update the form with the response data
+    });
+  });
+  
+</script>

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block header %}
+  <h4 class="text-center text-white my-3">Update User Information</h4>
+  <nav class="nav">
+    <a href="{% url 'custom_admin:users' %}" class="nav-item">User Management</a>
+    <a href="{% url 'custom_admin:admin_home' %}" class="nav-item">Admin Home</a>
+  </nav> 
+{% endblock header %}
+    
+
+{% block users %}
+
+<div class="row">
+  <div class="col-sm-8 offset-2 my-4">
+    <form action="" method="post">
+      {% csrf_token %} {{form.as_p}} {% for message in messages %}
+      <div>
+        <p class="text-danger my-5">{{message}}</p>
+      </div>
+      {% endfor %}
+      <input type="submit" class="text-center btn btn-success" value="Update" />
+    </form>
+  </div>
+</div>
+{% endblock users %}

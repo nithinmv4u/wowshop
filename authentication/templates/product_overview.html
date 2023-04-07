@@ -1,0 +1,176 @@
+{% load static %}
+<section id="product_overview">
+        <div class="row isotope-grid" id="product_list">
+            {% if products %}
+            
+            {% for product in products %}
+                <div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item women">
+                    <!-- Block2 -->
+                    <div class="block2">
+                        <div class="block2-pic hov-img0 label-new" data-label="New">
+
+                            <div id="carouselExampleIndicators{{ forloop.counter0 }}" class="carousel slide">
+                                <div class="carousel-indicators">
+                                  <button type="button" data-bs-target="#carouselExampleIndicators{{ forloop.counter0 }}" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                                  <button type="button" data-bs-target="#carouselExampleIndicators{{ forloop.counter0 }}" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                                  <button type="button" data-bs-target="#carouselExampleIndicators{{ forloop.counter0 }}" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                                </div>
+                                <div class="carousel-inner">
+                                    {% for image in product.images.all %}
+                                        <div class="carousel-item {% if forloop.counter0 == 0 %}active{% endif %} ">
+                                            <img class="d-block w-100 slideshow-image" src="{{ image.image.url }}" alt="Product Image">
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <button class="carousel-control-prev prev{{ forloop.counter0 }}" type="button" data-bs-target="#carouselExampleIndicators{{ forloop.counter0 }}" data-bs-slide="prev">
+                                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                  {% comment %} <span class="visually-hidden">Previous</span> {% endcomment %}
+                                </button>
+                                <button class="carousel-control-next next{{ forloop.counter0 }}" type="button" data-bs-target="#carouselExampleIndicators{{ forloop.counter0 }}" data-bs-slide="next">
+                                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                  {% comment %} <span class="visually-hidden">Next</span> {% endcomment %}
+                                </button>
+                            </div>
+
+                            <script>
+                                // Get references to the carousel and the next/previous buttons
+                                const carousel{{ forloop.counter0 }} = document.querySelector('#carouselExampleIndicators{{ forloop.counter0 }}');
+                                const prevButton{{ forloop.counter0 }} = carousel{{ forloop.counter0 }}.querySelector('.prev{{ forloop.counter0 }}');
+                                const nextButton{{ forloop.counter0 }} = carousel{{ forloop.counter0 }}.querySelector('.next{{ forloop.counter0 }}');
+                            
+                                // Add event listeners to the buttons
+                                prevButton{{ forloop.counter0 }}.addEventListener('click', () => {
+                                    // Move to the previous slide
+                                    const activeSlide = carousel{{ forloop.counter0 }}.querySelector('.carousel-item.active');
+                                    const prevSlide = activeSlide.previousElementSibling || carousel{{ forloop.counter0 }}.lastElementChild;
+                                    if(activeSlide.previousElementSibling){
+                                        activeSlide.classList.remove('active');
+                                        prevSlide.classList.add('active');
+                                    }
+                                    
+                                });
+                            
+                                nextButton{{ forloop.counter0 }}.addEventListener('click', () => {
+                                    // Move to the next slide
+                                    const activeSlide = carousel{{ forloop.counter0 }}.querySelector('.carousel-item.active');
+                                    const nextSlide = activeSlide.nextElementSibling || carousel{{ forloop.counter0 }}.firstElementChild;
+                                    if(activeSlide.nextElementSibling){
+                                        activeSlide.classList.remove('active');
+                                        nextSlide.classList.add('active');
+                                    }
+                                });
+                            </script>
+                            
+
+                            <a href="{% url 'authentication:product_quick_view' product.id %}" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 bor2 hov-btn1 p-lr-15 trans-04">
+                                Quick View
+                            </a>						  
+                        </div>
+
+                        <div class="block2-txt flex-w flex-t p-t-14">
+                            <div class="block2-txt-child1 flex-col-l ">
+                                <a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+                                    {{product.product}}
+                                </a>
+
+                                <span class="stext-105 cl3">
+                                    {{ product.get_price_range }}
+                                </span>
+                            </div>
+
+                            <div class="block2-txt-child2 flex-r p-t-3">
+                                <a href="#" class="btn-addwish-b2 dis-block pos-relative js-addwish-b2">
+                                    <img class="icon-heart1 dis-block trans-04" src="{% static 'images/icons/icon-heart-01.png' %}" alt="ICON">
+                                    <img class="icon-heart2 dis-block trans-04 ab-t-l" src="{% static 'images/icons/icon-heart-02.png' %}" alt="ICON">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %} 
+            {% else %}
+            <span>No result found</span>
+            {% endif %}
+        </div>
+        <!-- Pagination -->
+        {% if products.has_other_pages %}
+            <div class="flex-c-m flex-w w-full p-t-38" id='pagenation'>
+                {% if products.has_other_pages %}
+                    <div class="flex-c-m flex-w w-full p-t-38">
+                        {% if products.has_previous %}
+                            {% comment %} <a href="?page={{ products.previous_page_number }}" class="flex-c-m  trans-04 m-all-7">Previous</a> {% endcomment %}
+                        {% endif %}
+                        {% for num in products.paginator.page_range %}
+                            {% if products.number == num %}
+                                <span class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1">{{ num }}</span>
+                            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+                                <a href="" page={{num}} class="flex-c-m how-pagination1 trans-04 m-all-7">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if products.has_next %}
+                            {% comment %} <a href="?page={{ products.next_page_number }}" class="flex-c-m how-pagination1 trans-04 m-all-7">Next</a> {% endcomment %}
+                        {% endif %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %} 
+</section>
+
+<script>
+    function stateChange(xhr, page, num_pages){
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState==4){
+            if(xhr.status==200){
+                //console.log(xhr.responseText)
+                document.getElementById("product_overview").innerHTML = xhr.responseText;
+            }
+            }
+        }
+    }
+    function getCategories(page, num_pages) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("get", "{% url 'stores:product_overview' %}?page=" + page);
+        xhr.send();
+        stateChange(xhr, page, num_pages);
+    }
+    document.getElementById("pagenation").addEventListener("click", function(event) {
+        if (event.target.tagName.toLowerCase() === "a") {
+            event.preventDefault();
+            alert("danger")
+            console.log("pagenation");
+            const page = parseInt(event.target.getAttribute("page"));
+            console.log(page);
+            getCategories(page);
+        }
+        });
+</script>
+{% comment %} product search  {% endcomment %}
+{% comment %} <script>
+    function stateChange(xhr, page, num_pages){
+        xhr.onreadystatechange = function(){
+            if(xhr.readyState==4){
+            if(xhr.status==200){
+                //console.log(xhr.responseText)
+                document.getElementById("product_overview").innerHTML = xhr.responseText;
+            }
+            }
+        }
+    }
+    function getCategories(page, num_pages) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("get", "{% url 'stores:product_overview' %}?page=" + page);
+        xhr.send();
+        stateChange(xhr, page, num_pages);
+    }
+    // Aevent listener for pagination links
+    document.getElementById("pagenation").addEventListener("click", function(event) {
+    if (event.target.tagName.toLowerCase() === "a") {
+        event.preventDefault();
+        alert("danger")
+        console.log("pagenation");
+        const page = parseInt(event.target.getAttribute("page"));
+        getCategories(page);
+    }
+    });
+</script> {% endcomment %}

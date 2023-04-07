@@ -1,0 +1,14 @@
+body{
+    background-color: bisque;
+}
+
+.nav-log{
+    text-decoration: none;
+    padding: 10px 10px 10px 10px;
+    color: black;
+}
+.brand{
+    color: black;
+    text-align: center;
+    padding-top: 20px;
+}

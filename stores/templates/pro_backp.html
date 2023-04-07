@@ -1,0 +1,241 @@
+{% extends 'store_base.html' %}
+{% load static %}
+
+{% comment %} {% block header %}
+  <h4 class="text-center text-white">Product Management</h4>
+  <nav class="nav">
+    <a href="{% url 'custom_admin:admin_home' %}" class="nav-item">Admin Home</a>
+  </nav>
+{% endblock header %} {% endcomment %}
+
+{% block procat %}
+<div class="col container">
+  <div class="row">
+    <div class="text-end pe-3">
+      <form class="my-4" action="{% url 'stores:product_search' %}">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+          <input
+            type="search"
+            name="search"
+            class="form-control"
+            placeholder="Enter Product Name"
+          />
+          <button class="btn btn-dark" type="submit" id="button-addon2">
+            Search
+          </button>
+        </div>
+      </form>
+    </div>
+    <div class="">
+      <form class="my-4" action="{% url 'stores:product_list' %}">
+        {% csrf_token %}
+        <div class="mb-3 vw-100">
+          {{ filter.form }}
+          <button class="btn btn-dark" type="submit" id="button-addon2">
+            Filter
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="container" id="pro-list">
+    {% if products %}
+      <table class="table table-striped" id="product-table">
+        <thead>
+          <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Category</th>
+            <th scope="col">Make</th>
+            <th scope="col">Price</th>
+            <th scope="col">Product Image</th>
+            <th scope="col">ACTION</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for product in products %}
+            <tr>
+              <td>{{ product.product }}</td>
+              <td>{{ product.category }}</td>
+              <td>{{ product.make }}</td>
+              <td>₹ {{ product.price }}</td>
+              {% if product.product_image %}
+                <td><img src="{{ product.product_image.url }}" alt="{{ product.product }}" class="img-thumbnail" style="max-height: 5vh; max-width: 5vw;"></td>
+              {% else %}
+                <td>No Image</td>
+              {% endif %}
+              <td>
+                <a
+                  href="{% url 'stores:product_update' product.id %}"
+                  class="text-center btn btn-success btn-sm"
+                  >Edit</a
+                >
+                <a class="text-center btn btn-danger btn-sm my-1"
+                  href="{% url 'stores:product_delete' product.id %}"
+                  class="text-center btn btn-success btn-sm"
+                  >Delete</a
+                >
+                <form
+                  action="{% url 'stores:product_disable' product.id %}"
+                  method="post"
+                  class="d-inline"
+                >
+                  {% csrf_token %}
+                  <input
+                    type="submit"
+                    {% if product.is_enabled %}
+                    value="Disable"
+                    {% else %}
+                    value="Enable"
+                    {% endif %}
+                    class="text-center btn btn-secondary btn-sm my-1"
+                  />
+                </form>
+                <a class="text-center btn btn-info btn-sm my-1"
+                  href="{% url 'stores:product_detail' product.id %}"
+                  class="text-center btn btn-success btn-sm"
+                  >Detailed View</a
+                >
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% else %}
+      <span>No result found</span>
+    {% endif %}
+  </div>
+  {% comment %} pagnetion begin {% endcomment %} 
+  {% comment %} <div class="pagination">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a href="{{ request.path }}?page=1" data-target="#list-content">&laquo; first</a>
+        <a href="{{ request.path }}?page={{ page_obj.previous_page_number }}" data-target="#list-content">previous</a>
+      {% endif %}
+  
+      <span class="current-page">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+  
+      {% if page_obj.has_next %}
+        <a href="{{ request.path }}?page={{ page_obj.next_page_number }}" id="product-list-link">next</a>
+        <a href="{{ request.path }}?page={{ page_obj.paginator.num_pages }}" data-target="#list-content">last &raquo;</a>
+      {% endif %}
+    </span>
+  </div> {% endcomment %}
+  <div>   
+
+    {% comment %} {% if is_paginated %}
+    <nav aria-label="Page navigation">
+      <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}" id="new-page">Previous</a></li>
+        {% endif %}
+        {% for i in paginator.page_range %}
+        {% if page_obj.number == i %}
+        <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}" id="new-page">{{ i }}</a></li>
+        {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" id="new-page">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %} {% endcomment %}
+  </div> 
+  {% comment %} pagenation end {% endcomment %}
+
+  {% for message in messages %}
+  <div class="float-end">
+    <p class="text-danger">{{message}}</p>
+  </div>
+  {% endfor %}
+  {% comment %} <span class >
+    <a href="/admin" class="btn btn-lg btn-secondary">Back to Home</a>
+  </span> {% endcomment %}
+  <div>
+  <span class>
+    <a href="{% url 'stores:product_create' %}" class="btn btn-lg btn-info text-white">Create Product</a>
+  </span>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var table = document.getElementById('product-table');
+    var paginationLinks = table.nextElementSibling.getElementsByTagName('a');  // assuming the pagination links are in the next sibling element
+
+    for (var i = 0; i < paginationLinks.length; i++) {
+        paginationLinks[i].addEventListener('click', function(event) {
+            event.preventDefault();
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', event.target.href);
+            xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var response = JSON.parse(xhr.responseText);
+                    var newTableData = response.results;
+                    var newTableHtml = '';
+
+                    // generate the new HTML for the table rows based on the updated data
+                    newTableData.forEach(function(rowData) {
+                        newTableHtml += '<tr><td>' + rowData.product + '</td><td>' + rowData.category + '</td><td>' + rowData.make + '</td><td>' + rowData.price + '</td><td>' + rowData.product_image + '</td><td>' + rowData.is_enabled + '</td></tr>';
+                    });
+
+                    // replace the old table rows with the new ones
+                    var tableBody = table.getElementsByTagName('tbody')[0];
+                    tableBody.innerHTML = newTableHtml;
+
+                    // update the pagination links
+                    var paginationHtml = '';
+                    if (response.previous) {
+                        paginationHtml += '<a href="' + response.previous + '">Previous</a>';
+                    }
+                    for (var i = 1; i <= response.pages; i++) {
+                        paginationHtml += '<a href="?page=' + i + '">' + i + '</a>';
+                    }
+                    if (response.next) {
+                        paginationHtml += '<a href="' + response.next + '">Next</a>';
+                    }
+
+                    var paginationDiv = document.getElementById('pagination');
+                    paginationDiv.innerHTML = paginationHtml;
+                }
+            };
+            xhr.send();
+        });
+    }
+  });
+
+</script>
+
+
+{% comment %} <script>
+  function loadContent(url, targetId) {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      document.getElementById(targetId).innerHTML = xhr.responseText;
+      alert(xhr.responseText);
+    }
+    xhr.open('GET', url);
+    xhr.send();
+  }
+  const usersLink = document.getElementById('new-page');
+  const contentList = document.getElementById('pro-list');
+
+  // Add an event listener to the link
+  usersLink.addEventListener('click', (event) => {
+    alert("next clicked");
+    console.log("next clicked")
+    event.preventDefault();
+    const url = usersLink.href;
+    const targetId = 'pro-list';
+    loadContent(url, targetId);
+  });
+</script> {% endcomment %}
+
+{% endblock procat %}

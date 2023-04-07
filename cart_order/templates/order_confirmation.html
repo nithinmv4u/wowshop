@@ -1,0 +1,119 @@
+{% load static %}
+{% comment %} {% load json %} {% endcomment %}
+{% include 'navigation.html' %}
+<div class="bg3 p-t-55 p-b-32"></div>
+
+
+	<!-- breadcrumb -->
+	<div class="container">
+		<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+			<a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+				Home
+				<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+			</a>
+
+			<span class="stext-109 cl4">
+				Order Confirmation
+			</span>
+		</div>
+	</div>
+		
+
+	<!-- Order Confirmation -->
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50 m-t-20">
+					<div class="m-l-25 m-r--38 m-lr-0-xl">
+						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+							<h5 class="text-success">Your Order {{ order.order_number }} is confirmed. We'll inform you once shipment started..!</h5>
+							{% comment %} {% debug %} {% endcomment %}
+						</div>
+						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+							<div>
+								<div class="">
+									<h6 class="align-items-start">
+										<span class="mtext-116 cl2">
+											Shipping Address:
+										</span>
+									</h6>
+								</div>
+
+								<div class="">
+									<p>
+										{{ shipping_address.first_name }} {{ shipping_address.last_name }}, 
+										{{ shipping_address.h_name }}, 
+										{{ shipping_address.email }}, 
+										{{ shipping_address.street_address }}, {{ shipping_address.city }}, 
+										{{ shipping_address.state }} - {{ shipping_address.zip_code }}, 
+										{{ shipping_address.phone }} <br>
+										{% if shipping_address.order_note %}
+										Order Instructions:
+										{{ shipping_address.order_note }} <br>
+										{% else %}
+										<p>No Order Instructions given..!</p>
+										{% endif %}
+									</p>
+								</div>
+							</div>
+						</div>
+						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+							Payment method : {{ order.payment_method }} with Status: {{ payment.status }}
+						</div>
+						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+							<table class="table-shopping-cart">
+								<tr>
+									<th>Order Number</th>
+									<th>Date Ordered</th>
+									<th>Grand Total</th>
+									<th>Payment Status</th>
+								</tr>
+								<tr>
+									<td>{{ order.order_number }}</td>
+									<td>{{ order.date_ordered }}</td>
+									<td>₹ {{ order.grand_total }} /-</td>
+									<td>{{ order.payment_status }}</td>
+								</tr>
+							</table>
+						</div>	
+						<div class="wrap-table-shopping-cart">
+							<table class="table-shopping-cart">
+								<tr class="table_head">
+									<th class="column-1">Product</th>
+									<th class="column-2"></th>
+									<th class="column-3">Price</th>
+									<th class="column-4">Quantity</th>
+									<th class="column-5">Total Price</th>
+								</tr>
+
+								{% for order_item in order_items %}
+								<tr class="">
+									<td class="column-1">
+										<div class="how-itemcart1">
+											<img src="{{ order_item.product.images.first.image.url }}" alt="IMG">
+										</div>
+									</td>
+									<td class="column-2">{{ order_item.product.product }} <br>Size: {{ order_item.size.size }}</td>
+									<td class="column-3">₹ {{ order_item.size.price }}</td>
+									<td class="column-4">{{ order_item.quantity }}</td>
+									<td class="column-5">₹ {{ order_item.total_price }}</td>
+								</tr>
+								{% endfor %}
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+					<div class="col-sm-6">					  
+						<button type="button" class="flex-c-m stext-101 cl0 size-111 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="location.href='{% url 'authentication:home' %}'">
+							Home
+						</button>
+						<br>
+						<button type="button" class="flex-c-m stext-101 cl0 size-111 bg3 bor14 hov-btn3 p-lr-15 trans-04 pointer" onclick="location.href='{% url 'cart_order:order_history' %}'">
+							Order History
+						</button>				
+					</div>
+				</div>
+			</div>
+		</div>
+{% include 'footer.html' %}

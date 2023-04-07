@@ -1,0 +1,7 @@
+{% extends 'login_signup.html' %}
+
+{% block verification %}
+    <h2>Verify your email</h2>
+    <p>Click on the following link to verify your email:</p>
+    <p><a href="{{ verification_url }}">{{ verification_url }}</a></p>
+{% endblock verification %}

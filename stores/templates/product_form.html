@@ -1,0 +1,300 @@
+{% load static %}
+{% comment %} {% include 'admin_nav.html' %} {% endcomment %}
+
+{% comment %} <div class="col-md-10 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title">Add Product</h4>
+      <p class="card-description">
+        
+      </p> {% endcomment %}
+
+      {% comment %} <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        {% for form in product_size_form %}
+          {{ form.as_p }}
+        {% endfor %}
+        {% for form in product_image_form %}
+        {{ form.as_p }}
+        {% endfor %}
+    
+        <button type="submit">Save Changes</button>
+      </form> {% endcomment %}
+
+      <div class="input-group mb-3" id="product-form">
+      <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-group row">
+          <label for="id_product" class="col-sm-3 col-form-label">Product</label>
+          <div class="col-sm-9 col-form-label">
+            {{ form.product }}
+          </div>
+        </div>
+        <div class="form-group row">
+          <div class="col-sm-4 col-form-label">
+            <label for="id_category" class="col-sm-4 ">Category :</label>
+            {{ form.category }}
+          </div>
+          <div class="col-sm-4 col-form-label">
+            <label for="id_make" class="col-sm-4 ">Make :</label>
+            {{ form.make }}
+          </div>
+          <div class="col-sm-4 col-form-label">
+            <label for="id_make" class="col-sm-4 ">Gender :</label>
+            {{ form.gender }}
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="id_description" class="col-sm-3 col-form-label">Description</label>
+          <div class="col-sm-9">
+            {{ form.description }}
+          </div>
+        </div>
+        <hr>
+        <label for="id_product_image" class="col-sm-3 col-form-label">Product Size:</label>
+        <table>
+          <tr>
+          {{ form.sizes.management_form }}
+          {% for formset in form.sizes.forms %}
+            <td class="col-sm-2">{{ formset.as_p }}</td> 
+          {% endfor %}
+          </tr>
+        </table>
+        <hr>
+        <label for="id_product_image" class="col-sm-3 col-form-label">Product Images:</label>
+        <table>
+          <tr>
+            {{ form.images.management_form }}
+            {% for formset in form.images.forms %}
+              <td class="col-sm-2">
+                {% if formset.instance.image %}
+                  <img id="image-preview{{ forloop.counter0 }}" src="{{ formset.instance.image.url }}" alt="Add Image" style="max-width: 100%;">
+                {% else %}
+                  <img id="image-preview{{ forloop.counter0 }}" src="" alt="Add Image" width="100" height="100">
+                {% endif %}
+                {{ formset.as_p }}
+                // counter:{{ forloop.counter0 }}
+                
+              </td>
+              <script>
+                // Get the file input element
+                const fileInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-image"]');
+                console.log(fileInput{{ forloop.counter0 }})
+                // Add an event listener to the file input element
+                fileInput{{ forloop.counter0 }}.addEventListener('change', function() {
+                  // Get the file object
+                  const file = fileInput{{ forloop.counter0 }}.files[0];
+              
+                  // Create a FileReader object
+                  const reader = new FileReader();
+              
+                  // Set the image source to the data URL of the selected file
+                  reader.addEventListener('load', function() {
+                    const img = document.querySelector('#image-preview{{ forloop.counter0 }}');
+                    img.src = reader.result;
+                  });
+              
+                  // Read the file as a data URL
+                  if (file) {
+                    reader.readAsDataURL(file);
+                  }
+                });
+              </script>
+            {% endfor %}
+            {% comment %} {% for formset in form.images.forms %}
+              <td class="col-sm-2">
+                {% if formset.instance.image %}
+                  <img id="image-preview{{ forloop.counter0 }}" src="{{ formset.instance.image.url }}" alt="Add Image" style="max-width: 100%;">
+                {% else %}
+                  <img id="image-preview{{ forloop.counter0 }}" src="" alt="Add Image" width="100" height="100">
+                {% endif %}
+                {{ formset.as_p }}
+  
+                <script>
+                  // Get the file input element
+                  const fileInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-image"]');
+                  console.log(fileInput{{ forloop.counter0 }})
+  
+                  // Get the hidden crop coordinates input elements
+                  const xInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-x"]');
+                  const yInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-y"]');
+                  const widthInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-width"]');
+                  const heightInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-height"]');
+  
+                  // Add an event listener to the file input element
+                  fileInput{{ forloop.counter0 }}.addEventListener('change', function() {
+                    // Get the file object
+                    const file = fileInput{{ forloop.counter0 }}.files[0];
+  
+                    // Create a FileReader object
+                    const reader = new FileReader();
+  
+                    // Set the image source to the data URL of the selected file
+                    reader.addEventListener('load', function() {
+                      const img = document.querySelector('#image-preview{{ forloop.counter0 }}');
+                      img.src = reader.result;
+  
+                      // Create a new Cropper instance
+                      const cropper = new Cropper(img, {
+                        aspectRatio: 1,
+                        viewMode: 1,
+                        crop: function(event) {
+                          xInput{{ forloop.counter0 }}.value = event.detail.x;
+                          yInput{{ forloop.counter0 }}.value = event.detail.y;
+                          widthInput{{ forloop.counter0 }}.value = event.detail.width;
+                          heightInput{{ forloop.counter0 }}.value = event.detail.height;
+                        }
+                      });
+                    });
+  
+                    // Read the file as a data URL
+                    if (file) {
+                      reader.readAsDataURL(file);
+                    }
+                  });
+                </script>
+              </td>
+            {% endfor %} {% endcomment %}
+            {% comment %} {% for formset in form.images.forms %}
+              <td class="col-sm-2">
+                {% if formset.instance.image %}
+                  <img id="image-preview{{ forloop.counter0 }}" src="{{ formset.instance.image.url }}" alt="Add Image" style="max-width: 100%;">
+                {% else %}
+                  <img id="image-preview{{ forloop.counter0 }}" src="" alt="Add Image" width="100" height="100">
+                {% endif %}
+                {{ formset.as_p }}
+                <button class="btn btn-primary crop-btn" data-img-id="{{ forloop.counter0 }}">Crop</button>
+              </td>
+              <script>
+                // Get the file input element and the crop button
+                const fileInput{{ forloop.counter0 }} = document.querySelector('input[name="images-{{ forloop.counter0 }}-image"]');
+                const cropBtn{{ forloop.counter0 }} = document.querySelector('.crop-btn[data-img-id="{{ forloop.counter0 }}"]');
+                
+                // Add an event listener to the file input element
+                fileInput{{ forloop.counter0 }}.addEventListener('change', function() {
+                  // Get the file object
+                  const file = fileInput{{ forloop.counter0 }}.files[0];
+                
+                  // Create a FileReader object
+                  const reader = new FileReader();
+                
+                  // Set the image source to the data URL of the selected file
+                  reader.addEventListener('load', function() {
+                    const img = document.querySelector('#image-preview{{ forloop.counter0 }}');
+                    img.src = reader.result;
+                  });
+                
+                  // Read the file as a data URL
+                  if (file) {
+                    reader.readAsDataURL(file);
+                  }
+                });
+                
+                // Add an event listener to the crop button
+                cropBtn{{ forloop.counter0 }}.addEventListener('click', function() {
+                  // Get the image element and the crop coordinates
+                  const img = document.querySelector('#image-preview{{ forloop.counter0 }}');
+                  const x = document.querySelector('#id_images-{{ forloop.counter0 }}-x').value;
+                  const y = document.querySelector('#id_images-{{ forloop.counter0 }}-y').value;
+                  const width = document.querySelector('#id_images-{{ forloop.counter0 }}-width').value;
+                  const height = document.querySelector('#id_images-{{ forloop.counter0 }}-height').value;
+                
+                  // Create a canvas element
+                  const canvas = document.createElement('canvas');
+                  canvas.width = width;
+                  canvas.height = height;
+                
+                  // Draw the cropped image onto the canvas
+                  const ctx = canvas.getContext('2d');
+                  ctx.drawImage(img, x, y, width, height, 0, 0, width, height);
+                
+                  // Convert the canvas to a data URL and set it as the image source
+                  img.src = canvas.toDataURL();
+                });
+              </script>            
+            {% endfor %} {% endcomment %}
+          </tr>
+        </table>
+        <div class="text-center">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" data-bs-dismiss="modal" class="btn btn-warning my-2">Cancel</button>
+        </div>
+
+      </form>
+      
+      </div>
+      {% comment %} <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+    
+        {{ form.sizes.management_form }}
+        {% for formset in form.sizes.forms %}
+          {{ formset.as_p }}
+        {% endfor %}
+    
+        {{ form.images.management_form }}
+        {% for formset in form.images.forms %}
+          {{ formset.as_p }}
+        {% endfor %}
+    
+        <button type="submit">Save</button>
+      </form> {% endcomment %}
+    </div>
+  </div>
+</div>
+
+{% comment %} {% include 'admin_footer.html' %} {% endcomment %}
+
+
+
+{% comment %} <script>
+  // Get the input element and image preview element
+  var input = document.querySelector('#id_image-{{ forloop.counter0 }}-image');
+  var imgPreview = document.querySelector('#image-preview-{{ forloop.counter0 }}');
+  console.log(input)
+  // Set up the event listener for when a file is selected
+  input.addEventListener('change', function() {
+    // Get the selected file
+    var file = input.files[0];
+    
+    // Create a new FileReader object
+    var reader = new FileReader();
+    
+    // Set up the onload event for when the reader has finished reading the file
+    reader.onload = function() {
+      // Set the src attribute of the image preview to the data URL of the selected file
+      imgPreview.src = reader.result;
+    };
+    
+    // Read the selected file as a data URL
+    reader.readAsDataURL(file);
+  });
+</script> {% endcomment %}
+
+{% comment %} <script>
+  // Get all the file input elements with class "js-image-input"
+  const fileInputs = document.querySelectorAll('.js-image-input');
+
+  // Loop over all the file input elements and add the event listener dynamically
+  fileInputs.forEach(function(fileInput) {
+    fileInput.addEventListener('change', function() {
+      // Get the file object
+      const file = fileInput.files[0];
+
+      // Create a FileReader object
+      const reader = new FileReader();
+
+      // Set the image source to the data URL of the selected file
+      reader.addEventListener('load', function() {
+        const img = fileInput.parentNode.querySelector('.js-image-preview');
+        img.src = reader.result;
+      });
+
+      // Read the file as a data URL
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+    });
+  });
+</script> {% endcomment %}

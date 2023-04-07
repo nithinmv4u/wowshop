@@ -1,0 +1,316 @@
+{% load static %}
+{% include 'admin_nav.html' %}
+{% block procat %}
+<div class="main-panel">
+  <div class="content-wrapper">
+    <div class="row">
+      <h4 class="card-title">Coupon Details</h4>
+      <div class="col container">
+        <div class="row">
+          {% comment %} <div class="col-md-8 text-end">
+            <form class="my-4" >
+              <div class="input-group mb-3">
+                <input
+                  type="search"
+                  name="search"
+                  class="form-control"
+                  placeholder="Enter Category Name"
+                />
+                <button class="btn btn-dark btn-icon-text" type="submit" id="search-button">
+                  Search
+                </button>
+              </div>
+            </form>
+          </div> {% endcomment %}
+          <div class="col-md-4 text-center d-flex align-items-center" id="category_create">
+            <span>
+              <a href="{% url 'cart_order:coupon_admin' %}" data-bs-toggle='modal' data-bs-target='#coupon_create' class="btn btn-icon-text btn-success text-white cat-create-link">Create Coupon</a>
+            </span>
+          </div> 
+          {% if message %}
+          {{message}}
+          {% endif %}         
+        </div>
+      </div>
+
+      {% comment %} ----------Create Coupon Modal---------- {% endcomment %}
+      <div class="modal" tabindex="-1" id="coupon_create">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Create Coupon</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="post" action="{% url 'cart_order:create_coupon' %}">
+              {% csrf_token %}
+              <div class="modal-body">
+                  <div>
+                    <label for="code">Code:</label>
+                    <input class="form-control" type="text" name="code" id="code" required>
+                  </div>
+                  <div>
+                    <label for="discount">Discount ( % ):</label>
+                    <input class="form-control" type="number" name="discount" id="discount" min="0" max="100" required>
+                  </div>
+                  <div>
+                    <label for="valid_to">Valid to:</label>
+                    <input class="form-control" type="datetime-local" name="valid_to" id="valid_to" required>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" name="create_coupon" class="btn btn-primary">Create Coupon</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% comment %} ----------Create Coupon Modal End---------- {% endcomment %}
+
+      <div class="container" id="coupon_detail">
+        <div class="col-lg-12 grid-margin stretch-card">
+          <div class="card">
+            <div class="card-body">
+                  {% comment %} <h1>Coupon List</h1> {% endcomment %}
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead class="text-center">
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col">Code</th>
+                          <th scope="col">Discount (%)</th>
+                          <th scope="col">Validity</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for coupon in coupons %}
+                          <tr>
+                            <td>{{ coupon.code }}</td>
+                            <td>{{ coupon.discount }}%</td>
+                            <td>{{ coupon.valid_from }}</td>
+                            <td>{{ coupon.valid_to }}</td>
+                            <td>{% if coupon.active %} Active {% else %} Inactive {% endif %}</td>
+                            <td>
+                              {% if coupon.active %}
+                                <form method="post" action="{% url 'cart_order:toggle_coupon' %}">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="coupon_id" value="{{ coupon.id }}">
+                                  <button type="submit" class="btn-sm btn-outline-warning btn-icon-text" data-id="{{ coupon.id }}" id="toggle-coupon-btn"><i class="ti-reload btn-icon-prepend"></i> Disable</button>
+                                </form>
+                              {% else %}
+                                <form method="post" action="{% url 'cart_order:toggle_coupon' %}">
+                                  {% csrf_token %}
+                                  <input type="hidden" name="coupon_id" value="{{ coupon.id }}">
+                                  <button type="submit" class="btn-sm btn-outline-warning btn-icon-text" data-id="{{ coupon.id }}" id="toggle-coupon-btn"><i class="ti-reload btn-icon-prepend"></i> Enable</button>
+                                </form>
+                              {% endif %}
+                            </td>
+                          </tr>
+                        {% empty %}
+                          <tr>
+                            <td colspan="6">No coupons found.</td>
+                          </tr>
+                        {% endfor %}
+                      </tbody>
+                </table>
+                <div class="container">
+                  <div id="pagination_links"></div>
+                </div>               
+            </div>
+          </div>
+        </div>
+        {% for message in messages %}
+        <div class="float-end">
+          <p class="text-danger">{{message}}</p>
+        </div>
+        {% endfor %}
+        {% comment %} <span class >
+          <a href="/ admin" class="btn btn-lg btn-secondary">Back to Home</a>
+        </span> {% endcomment %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  {% comment %} document.getElementById("search-button").addEventListener("click", function(event) {
+      event.preventDefault();
+      //alert("at search")
+      const searchQuery = document.querySelector("input[name='search']").value;
+      const xhr = new XMLHttpRequest();
+      page=1;
+      xhr.open("get", "{% url 'stores:category_search' %}?search=" + searchQuery + " ?page= " + page);
+      xhr.send();
+      stateChange(xhr, page, {{num_pages}});
+  }); {% endcomment %}
+  $(document).ready(function() {
+    $('#coupon_create').on('submit', 'form', function(e) {
+        e.preventDefault();
+        console.log("submit")
+        var form = $(this);
+        //console.log(form.serialize())
+        $.ajax({
+            url: "{% url 'cart_order:create_coupon' %}",
+            type: form.attr('method'),
+            data: form.serialize(),
+            headers: {'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val()},
+            success: function(data) {
+              console.log(data);
+              var newContent = $(data).find('#coupon_detail').html();
+              $('#coupon_detail').html(newContent);
+              $('#coupon_create').modal('hide');
+                // handle successful submission
+              /*if (data.success) {
+                // handle successful submission
+                Swal.fire({
+                    title: "Success!",
+                    text: data.message,
+                    icon: "success",
+                });
+
+              // close the modal and update category list
+              $('#cat_create').modal('hide');
+              // update category list with new
+              //getCategories();
+              } else {
+                // handle errors
+                Swal.fire({
+                    title: "Error!",
+                    text:data.message,
+                    icon:"error",
+                });
+              }*/
+            },
+            error: function(data) {
+                // handle errors
+            }
+        });
+    });
+
+    $(document).on('click', '#toggle-coupon-btn', function(e) {
+      e.preventDefault();
+      coupon_id = $(this).data('id');
+      console.log(coupon_id);
+      $.ajax({
+        url: "{% url 'cart_order:toggle_coupon' %}",
+        type:'POST',
+        data:{
+          'coupon_id' : coupon_id
+        },
+        headers: {'X-CSRFToken': $('input[name=csrfmiddlewaretoken]').val()},
+        success: function(data){
+          console.log(data);
+          var newContent = $(data).find('#coupon_detail').html();
+          $('#coupon_detail').html(newContent);
+        }
+      });
+
+    });
+    
+  });
+  {% comment %} ---------worked code----------- {% endcomment %}
+  {% comment %} document.getElementById("category_list").addEventListener("click", function(event) {
+    if (event.target.classList.contains("cat-edit-link")) {
+      event.preventDefault();
+      const pk = event.target.getAttribute("data-id");
+      console.log(pk);
+      fetch(`/category/${pk}/update/`)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("category-form").innerHTML = data;
+      });
+    }
+  }); {% endcomment %}
+  $(document).on('click', '.cat-edit-link', function(e) {
+    e.preventDefault();
+    let edit_url = $(this).attr('href');
+    let cat_id = $(this).data('id');
+    console.log("edit: ",edit_url);
+    $('#cat_edit').data('edit-url', edit_url);
+    $('#cat_edit').modal('show');
+      //let edit_url = $('#cat_edit').data('edit-url');
+      //console.log(edit_url);
+      $.ajax({
+          url: edit_url,
+          type: 'GET',
+          success: function(data) {
+            //console.log(data);
+              // populate the edit form with data from the server
+              $('#cat_edit .modal-body').html(data);
+              //$('#edit-form input[name="name"]').val(data.category_name);
+              // ...
+          }
+      });
+
+    $('#cat_edit').on('submit', 'form', function(e) {
+        e.preventDefault();
+        console.log("at edit form submit")
+        var form = $(this);
+        let category_pk = cat_id;
+        let edit_url = `/category/${category_pk}/update/`;
+        //let edit_url = $(this).attr('action');
+        $.ajax({
+            url: edit_url,
+            type: 'POST',
+            data: $(this).serialize(),
+            success: function(data) {
+                if (data.success) {
+                    Swal.fire({
+                        title: "Success!",
+                        text: data.message,
+                        icon: "success",
+                    });
+                    // refresh the category list
+                    load_categories();
+                } else {
+                    Swal.fire({
+                        title: "Error!",
+                        text: data.message,
+                        icon: "error",
+                    });
+                }
+            }
+        });
+    });
+  });
+
+</script>
+
+
+{% endblock procat %}
+{% include 'admin_footer.html' %}
+{% comment %} {% for category in categories %}
+<tr>
+  <td>{{ category.category }}</td>
+  <td>{{ category.parent }}</td>
+  <td>
+    <a
+      href="{% url 'stores:category_update' category.id %}"
+      class="text-center btn btn-dark btn-icon-text"
+      >Edit<i class="ti-file btn-icon-append"></i></a
+    >
+    <a 
+      href="{% url 'stores:category_delete' category.id %}"
+      class="text-center btn btn-danger btn-icon-text"
+      >Delete<i class="ti-alert btn-icon-prepend"></i></a
+    >
+    <form
+      action="{% url 'stores:category_disable' category.id %}"
+      method="post"
+      class="d-inline"
+    >
+      {% csrf_token %}
+      <button type="submit" class="btn btn-warning btn-icon-text">
+        {% if category.is_enabled %}
+        Disable
+        {% else %}
+        Enable
+        {% endif %}
+        <i class="ti-alert btn-icon-prepend"></i>
+      </button>
+    </form>
+  </td>
+</tr>
+{% endfor %} {% endcomment %}
