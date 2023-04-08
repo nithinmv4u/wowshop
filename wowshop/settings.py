@@ -100,7 +100,7 @@ WSGI_APPLICATION = 'wowshop.wsgi.application'
 # }
 
 DATABASES = {
-    'wowshop_w11': {
+    'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': env('NAME'),
         'USER': env('USER'),
