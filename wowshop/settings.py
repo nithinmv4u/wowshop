@@ -145,18 +145,40 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-# STATIC_URL = 'static/'
-STATIC_URL = '/static/'
+# # STATIC_URL = 'static/'
+# STATIC_URL = '/static/'
 
-STATICFILES_DIRS = [
-    # BASE_DIR / "static",
-    BASE_DIR / "authentication/static",
-    BASE_DIR / "custom_admin/static",
-    BASE_DIR / "stores/static",
-    BASE_DIR / "cart_order/static",
+# STATICFILES_DIRS = [
+#     # BASE_DIR / "static",
+#     BASE_DIR / "authentication/static",
+#     BASE_DIR / "custom_admin/static",
+#     BASE_DIR / "stores/static",
+#     BASE_DIR / "cart_order/static",
+# ]
+
+# import os
+# STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+if DEBUG == True:
+    STATIC_URL = '/static/'
+    STATIC_ROOT = BASE_DIR/'static'
+    STATICFILES_DIRS = [
+        # BASE_DIR / "static",
+        BASE_DIR / "authentication/static",
+        BASE_DIR / "custom_admin/static",
+        BASE_DIR / "stores/static",
+        BASE_DIR / "cart_order/static",
+    ]
+else:
+    STATIC_URL = '/static/'
+    import os
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+    STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'authentication', 'static'),
+    os.path.join(BASE_DIR, 'custom_admin', 'static'),
+    os.path.join(BASE_DIR, 'stores', 'static'),
+    os.path.join(BASE_DIR, 'cart_order', 'static'),
 ]
-
-STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / "media"
