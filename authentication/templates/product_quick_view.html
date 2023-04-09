@@ -339,6 +339,31 @@
 			  priceDisplay.textContent = price;
 			});
 	</script> {% endcomment %}
+
+	<script>
+		// Get the select element and initialize Select2
+		const select = $('.js-select2');
+		const productIdField = $('#product_size_id');
+		select.select2({
+		  minimumResultsForSearch: 20,
+		  dropdownParent: select.next('.dropDownSelect2')
+		});
+	  
+		// Listen for changes on the Select2 dropdown
+		select.on('select2:select', (event) => {
+		  // Get the selected size and its price
+		  const selectedOption = event.params.data.element;
+		  const size = selectedOption.textContent;
+		  const price = selectedOption.getAttribute('data-price');
+		  const id = selectedOption.value;
+		  console.log(id);
+		  
+		  // Update the price display
+		  const priceDisplay = $('.js-price');
+		  priceDisplay.text(price);
+		  productIdField.val(id);
+		});
+	</script> 
 	<script>
 		    /*---------------------Add To Cart------------------------*/ 
 			

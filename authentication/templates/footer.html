@@ -153,40 +153,9 @@ Copyright &copy;{{ copyright_year }} All rights reserved | {{site_name}}
     </span>
 </div>
 
-<!--===============================================================================================-->	
-<script src="{% static 'vendor/jquery/jquery-3.2.1.min.js' %}"></script>
-<!--===============================================================================================-->
-<script src="{% static 'vendor/animsition/js/animsition.min.js' %}"></script>
-<!--===============================================================================================-->
-<script src="{% static 'vendor/bootstrap/js/popper.js' %}"></script>
-<script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
-<!--===============================================================================================-->
-<script src="{% static 'vendor/select2/select2.min.js' %}"></script>
 
-<script>
-    // Get the select element and initialize Select2
-    const select = $('.js-select2');
-    const productIdField = $('#product_size_id');
-    select.select2({
-      minimumResultsForSearch: 20,
-      dropdownParent: select.next('.dropDownSelect2')
-    });
-  
-    // Listen for changes on the Select2 dropdown
-    select.on('select2:select', (event) => {
-      // Get the selected size and its price
-      const selectedOption = event.params.data.element;
-      const size = selectedOption.textContent;
-      const price = selectedOption.getAttribute('data-price');
-      const id = selectedOption.value;
-      console.log(id);
-      
-      // Update the price display
-      const priceDisplay = $('.js-price');
-      priceDisplay.text(price);
-      productIdField.val(id);
-    });
-</script>  
+
+
 
 {% comment %} <script>
     $(".js-select2").each(function(){
