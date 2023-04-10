@@ -202,12 +202,12 @@
 		"image": "https://example.com/your_logo",
 		"order_id": "{{ order.razorpay_order_id }}", //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
 		"handler": function (response){
-			alert(response.razorpay_payment_id);
-			alert(response.razorpay_order_id);
-			alert(response.razorpay_signature);
+			//alert(response.razorpay_payment_id);
+			//alert(response.razorpay_order_id);
+			//alert(response.razorpay_signature);
 			// Get the order ID from the response
 			var order_id = {{order.id}};
-			alert(order_id);
+			//alert(order_id);
 			// Make an AJAX POST request to the server to confirm the payment
 			$.ajax({
 				type: "POST",
