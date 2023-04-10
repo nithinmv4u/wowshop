@@ -146,7 +146,8 @@
             let delete_url = "{% url 'stores:category_delete' 9999 %}".replace('9999', current_list.id);
             let disable_url = "{% url 'stores:category_disable' 9999 %}".replace('9999', current_list.id);
             let is_enabled = current_list.is_enabled ? 'Disable' : 'Enable';
-            html_content += "<tr><td>" + current_list.id + "</td><td>" + current_list.category + "</td><td>" + current_list.parent + "</td>" +
+            let parent = current_list.parent ? current_list.parent : 'No parent Category'
+            html_content += "<tr><td>" + current_list.id + "</td><td>" + current_list.category + "</td><td>" + parent + "</td>" +
               "<td><a href='" + edit_url + "' data-bs-toggle='modal' data-bs-target='#cat_edit' data-id='" + current_list.id + "' class='text-center btn-sm btn-dark btn-icon-text cat-edit-link'>Edit<i class='ti-file btn-icon-append'></i></a>  &nbsp;&nbsp;"+
                 "<a href='" + delete_url + "' class='text-center d-none btn btn-danger btn-icon-text'>Delete<i class='ti-alert d-none btn-icon-prepend'></i></a>  &nbsp;&nbsp;"+
                 "<a id='disable_" + current_list.id + "' href='"+ disable_url + "'data-id='" + current_list.id + "' class='btn-sm btn-warning btn-icon-text cat-disable-link'>"+ is_enabled +"<i class='ti-alert btn-icon-prepend'></i></a>";                

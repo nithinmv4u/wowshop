@@ -447,6 +447,12 @@ class RazorpayConfirmationView(LoginRequiredMixin, TemplateView):
             resp = client.utility.verify_payment_signature(params_dict)
         except razorpay.errors.SignatureVerificationError:
             # If signature verification fails, redirect to error page
+            cart = Cart.objects.filter(
+                    user=request.user,
+                    is_active=True,
+                    is_checked_out=False
+                ).first()
+            UsedCoupon.objects.filter(user=request.user, coupon=cart.coupon).delete()
             return HttpResponseBadRequest('Invalid Signature')
 
         # Fetch the order object and update its payment status

@@ -203,25 +203,24 @@
 						<input id="search-input" class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="product_search" placeholder="Search">
 					  </div>
 					</form>
-				  </div>
+				</div>
 	
 				<!-- Filter -->
-				<div class="dis-none panel-filter w-full p-t-10" >
-						{% comment %} <form id="product_search-form" method="get" action="{% url 'authentication:product_search' %}#product"> {% endcomment %}
-						<form id="product_filter-form" class="my-4" method="get">
-							<div class="bor8 dis-flex p-l-15">
-								{% csrf_token %}
-								<div class="mb-3 vw-100">
-								  {{ filter.form }}
-								  {% comment %} <button class="btn btn-dark" type="submit" id="button-addon2">
-									Filter
-								  </button> {% endcomment %}
-								</div>
+				<div class="dis-none panel-filter w-full p-t-10">
+					<form id="product_filter-form" class="my-4" method="get">
+						<div class="bor8 dis-flex p-l-15">
+							{% csrf_token %}
+							<div class="mb-3 vw-100">
+								{{ filter.form }}
+							</div>
 							<button id="filter-button" class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
-							<i class="zmdi zmdi-search"></i>
+								<i class="zmdi zmdi-search"></i>
+							</button>
+							<button id="clear-button" class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04 ml-3">
+								Clear
 							</button>
 						</div>
-						</form>
+					</form>
 				</div>
 			</div>
 			<!-- Product -->
@@ -365,6 +364,7 @@
 		}
 	}
 	function getCategories(page, num_pages) {
+		//alert('sdjsl');
 		const xhr = new XMLHttpRequest();
 		xhr.open("get", "{% url 'authentication:home' %}?page=" + page);
 		xhr.send();
@@ -416,13 +416,28 @@
 		document.getElementById('filter-button').addEventListener('click', (event) => {
 			// Prevent the default form submission behavior
 			event.preventDefault();
-			alert("danger")
+			//alert("danger")
 			const form = document.getElementById('product_filter-form');
 			const formData = new FormData(form);
 			console.log("filter", formData);
 			//const page = parseInt(event.target.getAttribute("page"));
 			//console.log(page);
 			getFilter(formData);
+		});
+		// Get the filter form element
+		const filterForm = document.getElementById("product_filter-form");
+
+		// Get the clear button element
+		const clearButton = document.getElementById("clear-button");
+	
+		// Add an event listener to the clear button
+		clearButton.addEventListener("click", function(event) {
+			// Prevent the form from submitting
+			event.preventDefault();
+	
+			// Reset the filter values
+			filterForm.reset();
+			getCategories(1);
 		});
 	}
 	addFilterListener();
