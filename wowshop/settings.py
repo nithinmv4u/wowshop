@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 
 from pathlib import Path
 import environ
+import os
 
 # Initialise environment variables
 env = environ.Env()
@@ -28,7 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
 ALLOWED_HOSTS = ['*']
 
@@ -172,7 +173,6 @@ if DEBUG == True:
     ]
 else:
     STATIC_URL = '/static/'
-    import os
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
     STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'authentication', 'static'),
