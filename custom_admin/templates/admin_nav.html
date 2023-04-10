@@ -406,21 +406,6 @@
               <i class="menu-arrow"></i> 
             </a>
           </li>
-          <li class="nav-item nav-category">Cart</li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'custom_admin:users' %}">
-              <i class="menu-icon mdi mdi-table"></i>
-              <span class="menu-title">Cart Items</span>
-              <i class="menu-arrow"></i> 
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="{% url 'custom_admin:users' %}">
-              <i class="menu-icon mdi mdi-table"></i>
-              <span class="menu-title">Cart Id</span>
-              <i class="menu-arrow"></i> 
-            </a>
-          </li>
           <li class="nav-item nav-category">Coupons</li>
           <li class="nav-item">
             <a class="nav-link" href="{% url 'cart_order:coupon_admin' %}">
@@ -431,18 +416,18 @@
           </li>``
           <li class="nav-item nav-category">Orders</li>
           <li class="nav-item">
-            <a class="nav-link" href="{% url 'custom_admin:users' %}">
+            <a class="nav-link" href="{% url 'cart_order:admin_order' %}">
               <i class="menu-icon mdi mdi-table"></i>
               <span class="menu-title">Order</span>
               <i class="menu-arrow"></i> 
             </a>
           </li>
-          <li class="nav-item">
+          {% comment %} <li class="nav-item">
             <a class="nav-link" href="{% url 'custom_admin:users' %}">
               <i class="menu-icon mdi mdi-table"></i>
               <span class="menu-title">Order Product</span>
               <i class="menu-arrow"></i> 
             </a>
-          </li>
+          </li> {% endcomment %}
         </ul>
       </nav>

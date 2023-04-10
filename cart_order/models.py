@@ -104,23 +104,22 @@ class Cart(models.Model):
     def clear(self):
         self.items.clear()
 
-PAYMENT_STATUS_CHOICES = {
-    ('pending','Pending'),
-    ('completed','Completed'),
-    ('failed','Failed'),
-}
 PAYMENT_METHOD_CHOICES = (
     ('COD', 'Cash on Delivery'),
     ('RAZORPAY', 'Razorpay Payment'),
 )
-
 class Order(models.Model):
+    PAYMENT_STATUS_CHOICES = {
+        ('pending','Pending'),
+        ('completed','Completed'),
+        ('failed','Failed'),
+    }
     order_number = models.CharField(max_length=20, unique=True)
     grand_total = models.DecimalField(max_digits=20, decimal_places=2, null=False, blank=False)
     date_ordered = models.DateTimeField(auto_now_add=True)
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
     payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES)
-    used_coupon = models.ForeignKey(UsedCoupon, on_delete=models.SET_NULL, null=True, blank=True)
+    used_coupon = models.ForeignKey(UsedCoupon, on_delete=models.SET_NULL, null=True, blank=True, related_name='orders')
     razorpay_order_id = models.CharField(max_length=255, default='')
     payment_method = models.CharField(max_length=10, choices=PAYMENT_METHOD_CHOICES, null=True, blank=True)
 
@@ -129,7 +128,7 @@ class OrderItem(models.Model):
     total_price = models.PositiveIntegerField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     size = models.ForeignKey(ProductSize, on_delete=models.CASCADE)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
 
 class ShippingAddress(models.Model):
     first_name = models.CharField(max_length=100)
@@ -142,7 +141,7 @@ class ShippingAddress(models.Model):
     zip_code = models.CharField(max_length=10)
     phone = models.CharField(max_length=20, default='')
     order_note = models.TextField(blank=True, null=True)
-    order = models.OneToOneField(Order, on_delete=models.CASCADE)
+    order = models.OneToOneField(Order, on_delete=models.CASCADE, related_name='shipping_address')
 
 class RazorpayPayment(models.Model):
     payment_id = models.CharField(max_length=100)

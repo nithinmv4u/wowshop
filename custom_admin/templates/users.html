@@ -17,14 +17,14 @@
       <h4 class="card-title">User details</h4>
       <div class="col-md-8 text-end">
         <form class="my-4" action="{% url 'custom_admin:searchusername' %}">
-          <div class="input-group mb-3">
+          <div class="input-group d-flex align-items-center">
             <input
               type="search"
               name="search"
-              class="form-control"
+              class="form-control py-2"
               placeholder="Enter First Name"
             />
-            <button class="btn btn-dark" type="submit" id="button-addon2">
+            <button class="btn btn-dark py-2" type="submit" id="button-addon2">
               Search
             </button>
           </div>
@@ -37,7 +37,7 @@
               class="d-inline"
             >
             {% csrf_token %}
-            <button type="submit" class="btn btn-dark btn-icon-text">
+            <button type="submit" class="btn btn-dark btn-icon-text py-2">
             Create User
             <i class="ti-file btn-icon-append"></i>
             </button>
@@ -81,29 +81,18 @@
                     </td>                    
                     <!-- <td>{{user.email}}</td> -->
                     <td>
-                      <button type="button" class="btn btn-dark btn-icon-text"
+                      <button type="button" class="btn-sm btn-dark btn-icon-text me-2"
                         onclick="location.href='{% url 'custom_admin:updatedata' user.id user.first_name %}'">
                         Edit
                         <i class="ti-file btn-icon-append"></i>
                       </button>
-                      {% comment %} <form
-                        action="{% url 'custom_admin:deletedata' user.id %}"
-                        method="post"
-                        class="d-inline"
-                      >
-                        {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-icon-text">
-                          Delete
-                          <i class="ti-alert btn-icon-prepend"></i>
-                        </button>
-                      </form> {% endcomment %}
                       <form
                         action="{% url 'custom_admin:disabledata' user.id %}"
                         method="post"
                         class="d-inline"
                       >
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-danger btn-icon-text">
+                        <button type="submit" class="btn-sm btn-danger btn-icon-text">
                           {% if user.is_active %}
                           Disable
                           {% else %}
@@ -111,16 +100,7 @@
                           {% endif %}
                           <i class="ti-alert btn-icon-prepend"></i>
                         </button>
-                        {% comment %} <input
-                          type="submit"
-                          {% if user.is_active %}
-                          value="Disable"
-                          {% else %}
-                          value="Enable"
-                          {% endif %}
-                          class="text-center btn btn-warning btn-sm my-1"
-                        /> {% endcomment %}
-                      </form>
+                      </form>                     
                     </td>
                   </tr>
                   {% endfor %}
@@ -165,3 +145,40 @@
 {% endfor %}
 {% endblock users %}
 {% include 'admin_footer.html' %}
+{% comment %} <script>
+  $(document).ready(function() {
+    $('#toggleButton').change(function() {
+      if ($(this).is(':checked')) {
+        // Send AJAX request to enable user account
+        $.ajax({
+          url: '{% url 'custom_admin:enabledata' user.id %}',
+          method: 'post',
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function(data) {
+            // Update UI or perform other actions
+          },
+          error: function(xhr, status, error) {
+            // Handle errors
+          }
+        });
+      } else {
+        // Send AJAX request to disable user account
+        $.ajax({
+          url: '{% url 'custom_admin:disabledata' user.id %}',
+          method: 'post',
+          data: {
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function(data) {
+            // Update UI or perform other actions
+          },
+          error: function(xhr, status, error) {
+            // Handle errors
+          }
+        });
+      }
+    });
+  });
+</script> {% endcomment %}

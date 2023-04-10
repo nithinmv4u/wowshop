@@ -20,6 +20,8 @@ import string
 from decimal import Decimal
 import razorpay
 import wowshop.settings
+from django_filters.views import FilterView
+from .filters import OrderFilter
 
 class CartView(LoginRequiredMixin, TemplateView):
     template_name = 'shoping_cart.html'
@@ -455,7 +457,7 @@ class RazorpayConfirmationView(LoginRequiredMixin, TemplateView):
         # Update order payment details
         order.payment_method = 'RAZORPAY'
         order.razorpay_order_id = razorpay_payment_id
-        order.payment_status = 'Completed'
+        order.payment_status = 'completed'
         order.save()
 
         # create razorpay payment record
@@ -508,96 +510,25 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
             order.payment = payment
         return queryset
     
+class AdminOrderView(LoginRequiredMixin, FilterView):
+    model = Order
+    context_object_name = 'orders'
+    template_name = 'admin_order.html'
+    filterset_class = OrderFilter
+    login_url = 'custom_admin:login'
+    paginate_by = 10
 
+    def post(self, request, *args, **kwargs):
+        print(request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest')
+        print('order_id' in request.POST)
+        print('payment_status' in request.POST)
+        if request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest' and 'order_id' in request.POST and 'payment_status' in request.POST:
+            order_id = request.POST['order_id']
+            print(order_id)
+            payment_status = request.POST['payment_status']
+            order = Order.objects.get(pk=order_id)
+            order.payment_status = payment_status
+            order.save()
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False})
 
-
-
-# class OrderCreateView(LoginRequiredMixin, CreateView):
-#     model = Order
-#     fields = []
-#     success_url = reverse_lazy('order_summary')
-#     template_name = 'order_summary.html'
-
-#     def generate_order_number(self):
-#         now = datetime.now()
-#         timestamp = int(now.timestamp())
-#         random_number = random.randint(1000, 9999)
-#         order_number = f'{timestamp}{random_number}'
-#         return order_number
-     
-#     @transaction.atomic
-#     def form_valid(self, form):
-#         #cart = Cart.objects.filter(user=self.request.user) # returns Cart Object to have methods also associated with it
-#         cart_items = CartItem.objects.filter(user=self.request.user) # returns QuerySet Object not a Cart object
-#         customer = self.request.user
-#         # customer = self.request.get_user()
-#         shipping_address = ShippingAddress(
-#             first_name=self.request.POST['firstName'],
-#             last_name=self.request.POST['lastName'],
-#             h_name=self.request.POST['h_name'],
-#             email=self.request.POST['email'],
-#             street_address=self.request.POST['street_address'],
-#             city=self.request.POST['city'],
-#             state=self.request.POST['state'],
-#             zip_code=self.request.POST['zip_code'],
-#             phone=self.request.POST['phone'],
-#             order_note = self.request.POST['orderNote'],
-#         )
-#         #shipping_address.save()
-#         grand_total = Cart.objects.filter(user=self.request.user).values_list('grand_total', flat=True).first()
-#         print(grand_total)
-#         order = Order(
-#             order_number=self.generate_order_number(),
-#             grand_total=grand_total,
-#             customer=customer,
-#             payment_status='pending',
-#         )
-
-#         # order = Order()
-#         # order.grand_total=grand_total
-#         # order.customer=customer
-#         # order.payment_status='pending'
-#         # order.order_number=self.generate_order_number()
-        
-#         print(order.grand_total)
-#         order.save()
-#         for cart_item in cart_items:
-#             order_item = OrderItem(
-#                 quantity= cart_item.quantity,
-#                 price=cart_item.total_price(),
-#                 product=cart_item.product,
-#                 order=order,
-#             )
-#             order_item.save()
-#         shipping_address.order = order
-#         shipping_address.save()
-#         # add code to set is_checked_out field of cart set to True and create a cookie with time out to store order summary if user accidently closes tab.
-#         return super().form_valid(form)
-    
-#     def form_invalid(self, form):
-#         messages.error(self.request, 'There was an error processing your order. Please try again.')
-#         return redirect('checkout')
-
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         order = Order.objects.latest('id')
-#         context['order'] = order
-#         context['order_items'] = OrderItem.objects.filter(order=order)
-#         context['shipping_address'] = ShippingAddress.objects.filter(order=order).first()
-#         return context
-
-    
-
-# class UpdateCartItemView(LoginRequiredMixin, View):
-#     def post(self, request, *args, **kwargs):
-#         cart_item = CartItem.objects.get(pk=self.kwargs['pk'], cart__user=request.user, cart__is_checked_out=False)
-#         quantity = int(request.POST.get('quantity', 1))
-#         if quantity <= 0:
-#             cart_item.delete()
-#         else:
-#             cart_item.quantity = quantity
-#             cart_item.save()
-#         cart = Cart.objects.get(user=request.user, is_checked_out=False)
-#         total_price = cart.get_total_price()
-#         cart_item_total_price = cart_item.get_total_price()
-#         return JsonResponse({'success': True, 'cart_total_price': total_price, 'cart_item_total_price': cart_item_total_price})

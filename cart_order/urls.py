@@ -2,7 +2,7 @@ from django.urls import path
 from .views import (CartView,AddToCartView,UpdateCartItemView,RemoveFromCartView,CheckoutView,
                     OrderCreateView,CouponAdminView, ApplyCouponView, RemoveCouponView,
                     OrderSummaryView, OrderConfirmationView, OrderHistoryView,
-                    RazorpayConfirmationView)
+                    RazorpayConfirmationView, AdminOrderView)
 # AddToCartView, RemoveFromCartView, UpdateCartItemView, CheckoutView, OrderDetailView
 
 app_name = 'cart_order'
@@ -22,5 +22,6 @@ urlpatterns = [
     path('order_summary/<int:order_id>/', OrderSummaryView.as_view(), name='order_summary'),
     path('order_confirmation/<int:order_id>/', OrderConfirmationView.as_view(), name='order_confirmation'),
     path('razorpay_confirmation/<int:order_id>/', RazorpayConfirmationView.as_view(), name='razorpay_confirmation'),
-    path('order_history/', OrderHistoryView.as_view(), name='order_history')
+    path('order_history/', OrderHistoryView.as_view(), name='order_history'),
+    path('admin_order/', AdminOrderView.as_view(), name='admin_order'),
 ]

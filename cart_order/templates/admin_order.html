@@ -1,0 +1,246 @@
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% include 'admin_nav.html' %}
+{% comment %} {% debug %} {% endcomment %}
+<div class="main-panel">
+	<div class="content-wrapper">
+	  <div class="row">
+		<h4 class="card-title">Order Details</h4>
+		<div class="col container">
+			<div class="row">
+				{% if message %}
+				{{message}}
+				{% endif %}         
+			</div>
+			<div class="row">
+				<form method="get">
+					<div class="pt-4">
+						<label>Order Number: </label>
+						{{ filter.form.order_number }}
+						<label>Customer: </label>
+						{{ filter.form.customer }}
+						<label>Payment Status: </label>
+						{{ filter.form.payment_status }}
+					</div>
+					<div class="py-4 col-sm-10">
+						<label>Date Ordered Range: </label>
+						{{ filter.form.date_ordered }}
+						<button class="btn btn-dark py-2 me-0" type="submit">Filter</button>
+					</div>
+				</form>
+			</div>
+		</div>
+  
+ 
+		<div class="container" id="coupon_detail">
+		  <div class="col-lg-12 grid-margin stretch-card">
+			<div class="card">
+			  <div class="card-body col"   id="order-list">
+					{% comment %} <h1>Coupon List</h1> {% endcomment %}
+					<div class="table-responsive col-sm-12">
+						<table class="table table-hover">
+							<thead class="text-center">
+								<tr>
+									<th>Order Number</th>
+									<th>Date Ordered</th>
+									<th>Shipping Address</th>
+									<th>Grand Total</th>
+									<th>Payment Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for order in orders %}
+								<tr>
+									<td><button class="text-primary" data-bs-toggle="modal" data-bs-target="#order-detail{{ order.order_number }}">{{ order.order_number }}</button></td>
+									<td>{{ order.date_ordered }}</td>
+									<td>{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }} <br>
+										{{ order.shipping_address.phone }}
+									</td>
+									<td>₹ {{ order.grand_total }} /-</td>
+									<td>{{ order.payment_status }}</td>
+								</tr>
+								{% empty %}
+								No Orders
+								{% endfor %}
+							</tbody>
+						</table>
+						{% for order in orders %}
+						{% comment %} ------------ Order Detail Modal ------------ {% endcomment %}
+						<div class="modal p-t-80" tabindex="-1" id="order-detail{{ order.order_number }}">
+							<div class="modal-dialog modal-lg">
+							<div class="modal-content p-2 bg-opacity-75">
+								<div class="modal-header">
+								<h5 class="modal-title">Order Number: {{ order.order_number }}</h5>
+								<div class="col-sm-8 text-center">
+									<span class="text-success">
+										Payment method : {{ order.payment_method }} with status: {{ order.payment.status }}
+									</span> 
+								</div>
+								<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									<div class="table-responsive col-sm-12">
+										<table class="table table-hover">
+											<thead class="text-center">
+												<tr>
+													<th>Order Number</th>
+													<th>Date Ordered</th>
+													<th>Grand Total</th>
+													<th>Payment Status</th>
+												</tr>
+											</thead>
+											<tbody class="text-center">
+												<tr>
+													<td>{{ order.order_number }}</td>
+													<td>{{ order.date_ordered }}</td>
+													<td>₹ {{ order.grand_total }} /-</td>
+													<td>
+														<select class="form-select payment-status-select" data-order-id="{{ order.id }}" id="payment-status-select{{forloop.counter0}}">
+															{% for status in order.PAYMENT_STATUS_CHOICES %}
+															  <option value="{{ status.0 }}" {% if order.payment_status == status.0 %}selected{% endif %}>{{ status.1 }}</option>
+															{% endfor %}
+														</select>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+									<hr>
+									<div class="table-responsive col-sm-12">
+										<table class="table table-hover">
+											<thead class="text-center">
+												<tr class="table_head">
+													<th class="column-1">Product</th>
+													<th class="column-2">Product Name</th>
+													<th class="column-3">Price</th>
+													<th class="column-4">Quantity</th>
+													<th class="column-5">Total Price</th>
+												</tr>
+											</thead>
+
+			
+											{% for order_item in order.order_items.all %}
+											<tbody class="text-center">
+												<tr class="">
+													<td class="column-1">
+														<div class="how-itemcart1">
+															<img src="{{ order_item.product.images.first.image.url }}" alt="IMG">
+														</div>
+													</td>
+													<td class="column-2">{{ order_item.product.product }} <br>Size: {{ order_item.size.size }}</td>
+													<td class="column-3">₹ {{ order_item.size.price }}</td>
+													<td class="column-4">{{ order_item.quantity }}</td>
+													<td class="column-5">₹ {{ order_item.total_price }}</td>
+												</tr>
+											</tbody>
+
+											{% endfor %}
+										</table>
+									</div>
+									<hr>
+									<div class="table-responsive col-sm-12">
+										<span class="text-info">
+											<h5>Shipping Address: </h5>
+											{{ order.shipping_address.first_name }} {{ order.shipping_address.last_name }},
+											 {{ order.shipping_address.h_name }}, {{ order.shipping_address.street_address }},
+											  {{ order.shipping_address.city }} {{ order.shipping_address.state }} {{ order.shipping_address.zip_code }} <br>
+											   Email: {{ order.shipping_address.email }} <br> Ph: {{ order.shipping_address.phone }}
+										</span> 
+									</div>
+								</div>
+								<div class="modal-footer">
+								<input type="hidden" value="{{order.id}}" id="order_id{{forloop.counter0}}">
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="save-button{{forloop.counter0}}">Save changes</button>
+								</div>
+							</div>
+							</div>
+						</div>
+						<script>
+							$(document).ready(function() {
+								$("#save-button{{forloop.counter0}}").click(function() {
+								  var selectedValue = $("#payment-status-select{{forloop.counter0}}").val();
+								  const order_id{{forloop.counter0}} = {{order.id}};
+								  console.log(selectedValue);
+								  console.log(",order_id" ,order_id{{forloop.counter0}})
+							  
+								  $.ajax({
+									url: "{% url 'cart_order:admin_order' %}",
+									method: "POST",
+									data: {
+										'order_id' : order_id{{forloop.counter0}},
+										'payment_status': selectedValue,
+										'csrfmiddlewaretoken': "{{ csrf_token }}"
+									},
+									success: function(response) {
+										$("#order-list").load(location.href + " #order-list");
+										if (response.success) {
+											Swal.fire("Payment status updated successfully");
+										} else {
+											Swal.fire("Error","Failed to update payment status");
+										}
+									},
+									error: function(xhr, status, error) {
+										Swal.fire("Warning", "An error occurred while updating the payment status");
+									}
+								  });
+								});
+							});
+						</script>
+					{% endfor %}
+					</div>
+				  <div class="container text-center">
+						<!-- Pagination -->
+						<div class="flex-c-m flex-w w-full p-t-38 pagination-links">
+							{% if page_obj.has_previous %}
+								<a href="?page={{ page_obj.previous_page_number }}" page="{{ page_obj.previous_page_number }}" class="flex-c-m trans-04 m-all-7">Previous</a>&nbsp;&nbsp;
+							{% endif %}
+							{% for num in page_obj.paginator.page_range %}
+								{% if page_obj.number == num %}
+								<span class="flex-c-m how-pagination1 trans-04 m-all-7 active-pagination1">{{ num }}</span>&nbsp;&nbsp;
+								{% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+								<a href="?page={{ num }}" page="{{ num }}" class="flex-c-m how-pagination1 trans-04 m-all-7">{{ num }}</a>&nbsp;&nbsp;
+								{% endif %}
+							{% endfor %}
+							{% if page_obj.has_next %}
+								<a href="?page={{ page_obj.next_page_number }}" page="{{ page_obj.next_page_number }}" class="flex-c-m trans-04 m-all-7">Next</a>
+							{% endif %}
+						</div>	
+				  </div>               
+			  </div>
+			</div>
+		  </div>
+		  {% for message in messages %}
+		  <div class="float-end">
+			<p class="text-danger">{{message}}</p>
+		  </div>
+		  {% endfor %}
+		  {% comment %} <span class >
+			<a href="/ admin" class="btn btn-lg btn-secondary">Back to Home</a>
+		  </span> {% endcomment %}
+		</div>
+	  </div>
+	</div>
+  </div>
+</div>
+
+
+{% include 'admin_footer.html' %}
+<script>
+	$(document).on('click', '.pagination-links a', function(e){
+		e.preventDefault();
+		var url = $(this).attr('href');
+		$.ajax({
+		  url: url,
+		  success: function(data){
+			const divToDisplay = $(data).find('#order-list');
+			console.log(divToDisplay.html())
+			$('#order-list').html(divToDisplay.html());
+		  },
+		  error: function(){
+			console.log('Error loading page.');
+		  }
+		});
+	});			
+</script>

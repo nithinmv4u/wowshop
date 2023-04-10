@@ -10,23 +10,23 @@
           <div class="col-md-8 text-end">
             <form class="my-4" >
               {% comment %} action="{% url 'stores:category_search' %}" {% endcomment %}
-              <div class="input-group mb-3">
+              <div class="input-group mb-3 align-items-center">
                 <input
                   type="search"
                   name="search"
-                  class="form-control"
+                  class="form-control py-2"
                   placeholder="Enter Category Name"
                 />
-                <button class="btn btn-dark btn-icon-text" type="submit" id="search-button">
+                <button class="btn btn-dark btn-icon-text py-2" type="submit" id="search-button">
                   Search
                 </button>
-              </div>
+              </div>              
             </form>
           </div>
           <div class="col-md-4 text-center d-flex align-items-center" id="category_create">
             <span>
               {% comment %} <a href='" + edit_url + "' data-bs-toggle='modal' data-bs-target='#cat_edit' data-id='" + current_list.id + "' class='text-center btn btn-dark btn-icon-text cat-edit-link'>Edit<i class='ti-file btn-icon-append'></i></a>  {% endcomment %}
-              <a href="{% url 'stores:category_create' %}" data-bs-toggle='modal' data-bs-target='#cat_create' class="btn btn-icon-text btn-success text-white cat-create-link">Create Category</a>
+              <a href="{% url 'stores:category_create' %}" data-bs-toggle='modal' data-bs-target='#cat_create' class="py-2 btn btn-icon-text btn-success text-white cat-create-link">Create Category</a>
             </span>
           </div>          
         </div>
@@ -147,9 +147,9 @@
             let disable_url = "{% url 'stores:category_disable' 9999 %}".replace('9999', current_list.id);
             let is_enabled = current_list.is_enabled ? 'Disable' : 'Enable';
             html_content += "<tr><td>" + current_list.id + "</td><td>" + current_list.category + "</td><td>" + current_list.parent + "</td>" +
-              "<td><a href='" + edit_url + "' data-bs-toggle='modal' data-bs-target='#cat_edit' data-id='" + current_list.id + "' class='text-center btn btn-dark btn-icon-text cat-edit-link'>Edit<i class='ti-file btn-icon-append'></i></a>  "+
-                "<a href='" + delete_url + "' class='text-center d-none btn btn-danger btn-icon-text'>Delete<i class='ti-alert d-none btn-icon-prepend'></i></a>  "+
-                "<a id='disable_" + current_list.id + "' href='"+ disable_url + "'data-id='" + current_list.id + "' class='btn btn-warning btn-icon-text cat-disable-link'>"+ is_enabled +"<i class='ti-alert btn-icon-prepend'></i></a>";                
+              "<td><a href='" + edit_url + "' data-bs-toggle='modal' data-bs-target='#cat_edit' data-id='" + current_list.id + "' class='text-center btn-sm btn-dark btn-icon-text cat-edit-link'>Edit<i class='ti-file btn-icon-append'></i></a>  &nbsp;&nbsp;"+
+                "<a href='" + delete_url + "' class='text-center d-none btn btn-danger btn-icon-text'>Delete<i class='ti-alert d-none btn-icon-prepend'></i></a>  &nbsp;&nbsp;"+
+                "<a id='disable_" + current_list.id + "' href='"+ disable_url + "'data-id='" + current_list.id + "' class='btn-sm btn-warning btn-icon-text cat-disable-link'>"+ is_enabled +"<i class='ti-alert btn-icon-prepend'></i></a>";                
           }
           document.getElementById("category_list").innerHTML = html_content;
           
