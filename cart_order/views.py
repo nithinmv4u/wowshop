@@ -505,7 +505,9 @@ class OrderHistoryView(LoginRequiredMixin, ListView):
                 payment = RazorpayPayment.objects.get(payment_id=order.razorpay_order_id)
             except:
                 payment = None
-            order.order_items = order_items
+            order.order_items.set(order_items)
+            # order.shipping_address.set(shipping_address)
+            # order.payment.set(payment)
             order.shipping_address = shipping_address
             order.payment = payment
         return queryset
