@@ -1,0 +1,17 @@
+# .cpanel.yml
+
+# Specify the deployment strategy.
+deployment:
+  tasks:
+    - import:
+        source: local
+        target: /home/diby48m0sccp/public_html
+    - resetFilePermissions: '/home/diby48m0sccp/public_html'
+    - run:
+        command: |
+          source /home/diby48m0sccp/venv/bin/activate
+          pip install -r /home/diby48m0sccp/wowshop/requirements.txt
+          cd /home/diby48m0sccp/wowshop
+          python manage.py migrate
+          python manage.py collectstatic --noinput
+    - execute: 'touch /home/diby48m0sccp/public_html/restart.txt'
