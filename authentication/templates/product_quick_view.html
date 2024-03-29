@@ -400,7 +400,9 @@
 							}
 						},
 						error: function(data){
-							swal("Warning", "Failed to add item to cart", "warning");
+							swal("Warning", "Failed to add item to cart. Please login to continue.", "warning").then(function() {
+								window.location.href = "{% url 'authentication:login' %}";
+							});
 						}
 					});
 					

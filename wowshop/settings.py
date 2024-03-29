@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 from pathlib import Path
 import environ
 import os
+import dj_database_url
 
 # Initialise environment variables
 env = environ.Env()
@@ -101,17 +102,22 @@ WSGI_APPLICATION = 'wowshop.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': env('NAME'),
-        'USER': 'nithin',
-        'PASSWORD': 'nithin',
-        'HOST': env('HOST'),
-        'PORT': env('PORT'),
-    }
-}
+# for AWS
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': env('NAME'),
+#         'USER': 'nithin',
+#         'PASSWORD': 'nithin',
+#         'HOST': env('HOST'),
+#         'PORT': env('PORT'),
+#     }
+# }
 
+# for Render
+DATABASES = {
+	"default": dj_database_url.parse(os.environ.get("DATABASE_URL"))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
